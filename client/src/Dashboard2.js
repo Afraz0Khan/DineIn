@@ -26,6 +26,10 @@ function DashBoard2(){
     //     }
     // )
 
+    function toCreate(){
+        navigate('/menu')
+    }
+
     function LogOut(){
         localStorage.removeItem('token')
         navigate('/login')
@@ -41,7 +45,7 @@ function DashBoard2(){
             <button>View Menu</button>
             <br />
             <br />
-            <button>Edit Menu</button>
+            <button onClick={toCreate}>Edit Menu</button>
             <br />
             <br />
             <button>View Orders</button>
@@ -49,8 +53,6 @@ function DashBoard2(){
             <br />
             <br />
             <br />
-            <ItemCard heading='joe' description='joejoe' price='69.99' />
-            
             
             <button onClick={LogOut}>Log Out</button>
         </div>

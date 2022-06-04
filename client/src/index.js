@@ -5,6 +5,7 @@ import Register from './Register';
 import Login from './Login';
 import DashBoard from './DashBoard';
 import DashBoard2 from './Dashboard2';
+import Menu from './editMenu';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
@@ -18,6 +19,7 @@ root.render(
         <Route path='/login' element={<Login />} />
         <Route path='/dashboard' element={<DashBoard />} />
         <Route path='/seller_dashboard' element={<DashBoard2 />} />
+        <Route path='/menu' element={<Menu />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
