@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import ItemCard from './card';
 import testdata from './test.json';
 
@@ -9,9 +9,30 @@ function Menu(){
     //     onLoad()
     //     createCat(testdata.menu.categories, "breakfast")
     // })
+    const [inAddCategory, setAddCategory] = useState(false)
 
-
-
+    function AddCategory(){
+        const [categoryName, setCategoryName] = useState("")
+        if (inAddCategory){
+            return(
+                <div>
+                    <form type="submit" onSubmit={(e) => {
+                        e.preventDefault()
+                        createCat(categoryName)
+                        setAddCategory(false)
+                    }
+                    }>
+                        <input type="text" 
+                            placeholder='Category Name'
+                            value={categoryName}
+                            onChange={(e) => setCategoryName(e.target.value)}
+                        />
+                        <input type="submit" value="Add Category" />
+                    </form>
+                </div>
+            );
+        } 
+    }
 
     // maybe create a list to store categories or change the data structure used
     function createCat(obj, category){
@@ -52,7 +73,13 @@ function Menu(){
 
     return(
         <div>
+            <h1>Menu</h1>
+            <br />
+            <button onClick={() => setAddCategory(true)}>Add Category</button>
+            <br />
             {onLoad()}
+            <br />
+            {AddCategory()}
         </div>
     );
 }
