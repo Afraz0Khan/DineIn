@@ -12,13 +12,13 @@ function Menu(){
     const [inAddCategory, setAddCategory] = useState(false)
 
     function AddCategory(){
+        console.log('here')
         const [categoryName, setCategoryName] = useState("")
         if (inAddCategory){
             return(
                 <div>
                     <form type="submit" onSubmit={(e) => {
                         e.preventDefault()
-                        createCat(categoryName)
                         setAddCategory(false)
                     }
                     }>
@@ -40,7 +40,6 @@ function Menu(){
         const objs = obj[category].items
         for (let x in objs){
             const item = objs[x]
-            console.log(item)
             l.push(
                 <div>
                     <ItemCard
@@ -60,7 +59,7 @@ function Menu(){
         const categories = testdata.menu.categories
         for (let category in categories){
             x.push(
-                <div>
+                <div style={{marginLeft: '10px'}}>
                     <br />
                     <h2>{category}</h2>
                     <br />

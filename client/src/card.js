@@ -8,7 +8,7 @@ import React, { Component } from 'react';
 
 function ItemCard(props){
     return(
-        <div>
+        <div style={{marginLeft: '10px'}}>
             <h4>{props.heading}</h4>  
             <br />
             <div style={{display: 'flex'}}>
