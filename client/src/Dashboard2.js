@@ -11,20 +11,20 @@ function DashBoard2(){
 
     const navigate = useNavigate();
 
-    // useEffect(
-    //     () => {
-    //         const token = localStorage.getItem('token')
-    //         if (token){
-    //             const user = jwtDecode(token)
-    //             if (!user){
-    //                 localStorage.removeItem('token')
-    //                 navigate('/login')
-    //             }
-    //         } else {
-    //             navigate('/login')
-    //         }
-    //     }
-    // )
+    useEffect(
+        () => {
+            const token = localStorage.getItem('token')
+            if (token){
+                const user = jwtDecode(token)
+                if (!user){
+                    localStorage.removeItem('token')
+                    navigate('/login')
+                }
+            } else {
+                navigate('/login')
+            }
+        }
+    )
 
     function toCreate(){
         navigate('/menu')

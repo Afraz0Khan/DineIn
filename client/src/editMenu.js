@@ -19,6 +19,7 @@ function Menu(){
                 <div>
                     <form type="submit" onSubmit={(e) => {
                         e.preventDefault()
+                        setCategoryName("")
                         setAddCategory(false)
                     }
                     }>
