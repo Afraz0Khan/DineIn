@@ -2,24 +2,18 @@ const mongoose = require('mongoose');
 
 
 const Menu = new mongoose.Schema({
-    items:{
-        title: {
-            type: String,
-            required: true
-        },
-        description: {
-            type: String
-        },
-        image: {
-            type: String,
-            required: true
-        },
-        price: {
-            type: Number,
-            required: true
+    "user_id": {
+        "type": "String"
+    },
+    "menu": {
+        "categories": {
+            "type": [
+                "Mixed"
+            ]
         }
     }
-})
+},
+{collection: 'menus'});
 
 
 module.exports = mongoose.model('Menu', Menu);

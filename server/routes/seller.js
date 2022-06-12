@@ -6,13 +6,23 @@ const User = require('../models/user');
 const Menu = require('../models/menu');
 
 
-// create/edit menu
 
 
-router.post('/menu', async(req, res) => {
+router.put('/menu/initiate', async(req, res) => {
+
     console.log(req.body)
-    const menu = await Menu.create(req.body)
-    res.status(200).send('ok')
+
+    const user = await User.findOne({email: req.body.user_email})
+
+    const user_id = user._id.valueOf()
+
+    console.log(user_id)
+
+    const cat = await Menu.findOneAndUpdate({user_id: user_id}, {$push: {categories: {category: req.body.categoryName, items: []}}})
+
+    console.log(cat)
+
+    res.status(200).send('category updated')
 })
 
 

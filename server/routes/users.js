@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const Seller = require('../models/seller');
+const Menu = require('../models/menu');
+
 
 
 router.post('/register', async (req, res) => {
@@ -30,7 +32,16 @@ router.post('/register', async (req, res) => {
                 resAddress: req.body.resAddress,
                 role: req.body.role
             })
-            res.status(200).send('seller created')
+            
+            const this_user = await Seller.findOne({email: req.body.email})
+
+            const menu = await Menu.create({
+                user_id: this_user._id.valueOf(),
+                menu: {
+                    categories: {}
+                }
+            })
+            res.status(200).send('seller and menu created')
         }
     } catch(err){
 

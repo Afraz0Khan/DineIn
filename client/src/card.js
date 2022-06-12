@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 
 
 
@@ -7,6 +7,7 @@ import React, { Component } from 'react';
 
 
 function ItemCard(props){
+    const [category, setCategory] = useState(props.category)
     return(
         <div style={{marginLeft: '10px'}}>
             <h4>{props.heading}</h4>  
