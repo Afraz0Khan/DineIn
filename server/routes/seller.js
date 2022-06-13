@@ -1,7 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const Menu = require('../models/menu');
 
@@ -14,13 +12,13 @@ router.put('/menu/initiate', async(req, res) => {
 
     const user = await User.findOne({email: req.body.user_email})
 
-    const user_id = user._id.valueOf()
+    const userId = user._id.valueOf()
 
-    console.log(user_id)
+    console.log(userId)
 
-    const cat = await Menu.findOneAndUpdate({user_id: user_id}, {$push: {categories: {category: req.body.categoryName, items: []}}})
+    const updatedCategory = await Menu.updateOne({user_id: userId}, {$push: {"menu.categories": {category: req.body.categoryName, items: []}}})
 
-    console.log(cat)
+    console.log(updatedCategory)
 
     res.status(200).send('category updated')
 })

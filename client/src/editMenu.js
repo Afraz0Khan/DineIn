@@ -64,26 +64,6 @@ function Menu(){
         } 
     }
 
-    // maybe create a list to store categories or change the data structure used
-    // function createCat(obj, category){
-    //     const l = [];
-    //     const objs = obj[category].items
-    //     for (let x in objs){
-    //         const item = objs[x]
-    //         l.push(
-    //             <div>
-    //                 <ItemCard
-    //                     heading={item["heading"]}
-    //                     description={item["description"]}
-    //                     price={item["price"]}
-    //                 />
-    //                 <br />
-    //             </div> 
-    //         )
-    //     }
-    //     return l;
-    // }
-
     return(
         <div>
             <h1>Menu</h1>
