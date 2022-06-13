@@ -29,14 +29,13 @@ function Menu(){
     })
 
     async function OnCategorySubmit(categoryName){
-        const response = await axios.put('/api/seller/menu/initiate', {
+        const response = await axios.post('/api/seller/menu/initiate', {
             categoryName,
             user_email
         }).then((e) => {
             console.log(e)
         })
     }
-    
 
     // use request parameters to send user_id
     function AddCategory(){
