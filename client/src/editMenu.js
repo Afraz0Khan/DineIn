@@ -17,7 +17,6 @@ function Menu(){
     const navigate = useNavigate();
 
     useEffect(() => {
-        console.log('here')
         GetMenu()
     }, [menuReady])
 
@@ -31,11 +30,16 @@ function Menu(){
             } else {
                 setUser_email(user.email)
                 setMenuReady(true)
+                setCats([])
             }
         } else {
             navigate('/login')
         }
     }, [])
+
+
+
+    
 
 
     async function GetMenu(){
@@ -48,7 +52,8 @@ function Menu(){
             console.log(menuReady)
             if (menuReady){
                 const data = res.data
-                data.categories.slice(1).forEach(element => {
+                const main = data.categories.slice(1)
+                main.forEach(element => {
                     setCats(prevArray => [...prevArray, (<div>
                         <h2>
                             {element.category}
@@ -108,6 +113,41 @@ function Menu(){
             {cats}
         </div>
     );
+}
+
+
+
+
+
+function MenuFragment(props){
+    const items = props.items // list of objects
+    const category = props.category // string
+
+    const [itemFragments, setItemFragments] = useState();
+
+    useEffect(() => {
+        items.forEach(item => {
+
+            setItemFragments(arr => [...arr, (
+                <ItemCard category={category}
+                    heading= {item.heading}
+                    description= {item.description}
+                    price= {item.price}
+                />
+            )])
+        })
+    })
+
+    return(
+        <div>
+            <h2>
+                {category}
+            </h2>
+            <br />
+            {itemFragments}
+        </div>
+    );
+
 }
 
 
