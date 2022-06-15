@@ -19,11 +19,22 @@ router.post('/menu/initiate', async(req, res) => {
 
 router.get('/menu', async (req, res) => {
 
-    const user = await User.findOne({email: req.body.user_email})
-    const userId = user._id.valueOf()
+    if (req.query.user_email.length>0){
+        const user = await User.findOne({email: req.query.user_email})
+        const userId = user._id.valueOf()
 
-    const data = await Menu.findOne({user_id: userId})
-    res.status(200).send(data.menu)
+        const data = await Menu.findOne({user_id: userId})
+
+        res.status(200).send(data.menu)
+    }
+    // const user = await User.findOne({email: req.query.user_email})
+    // const userId = user._id.valueOf()
+
+    // const data = await Menu.findOne({user_id: userId})
+    
+    // console.log(data)
+
+    // res.status(200).send(data.menu)
 })
 
 

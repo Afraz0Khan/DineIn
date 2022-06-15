@@ -3,17 +3,25 @@ import ItemCard from './card';
 import jwtDecode from 'jwt-decode';
 import { useNavigate, useRoutes } from 'react-router';
 import axios from 'axios';
+import { ReactDOM } from 'react';
 
 
 
 function Menu(){
     const [inAddCategory, setAddCategory] = useState(false)
     const [user_email, setUser_email] = useState("")
+    const [menuReady, setMenuReady] = useState(false)
+    const [cats, setCats] = useState([]);
+    
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        
+        console.log('here')
+        GetMenu()
+    }, [menuReady])
+
+    useEffect(() => {
         const token = localStorage.getItem('token')
         if (token){
             const user = jwtDecode(token)
@@ -22,11 +30,38 @@ function Menu(){
                 navigate('/login')
             } else {
                 setUser_email(user.email)
+                setMenuReady(true)
             }
         } else {
             navigate('/login')
         }
-    })
+    }, [])
+
+
+    async function GetMenu(){
+        const joe = await axios.get('/api/seller/menu', {
+            params: {
+                user_email: user_email
+            }
+        }).then(res => {
+            console.log('then')
+            console.log(menuReady)
+            if (menuReady){
+                const data = res.data
+                data.categories.slice(1).forEach(element => {
+                    setCats(prevArray => [...prevArray, (<div>
+                        <h2>
+                            {element.category}
+                        </h2>
+                    </div>)])
+                    console.log(element)
+                });
+                console.log(cats)
+            }
+        })
+    }
+
+
 
     async function OnCategorySubmit(categoryName){
         const response = await axios.post('/api/seller/menu/initiate', {
@@ -37,7 +72,7 @@ function Menu(){
         })
     }
 
-    // use request parameters to send user_id
+   
     function AddCategory(){
 
         const [categoryName, setCategoryName] = useState("")
@@ -70,6 +105,7 @@ function Menu(){
             <button onClick={() => setAddCategory(true)}>Add Category</button>
             <br />
             {AddCategory()}
+            {cats}
         </div>
     );
 }
