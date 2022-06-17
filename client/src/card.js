@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 
 
 
@@ -22,4 +22,41 @@ function ItemCard(props){
     );
 }
 
-export default ItemCard;
+
+
+function MenuFragment(props){
+    const items = props.props.items // list of objects
+    const category = props.props.category // string
+    
+    
+
+    const [itemFragments, setItemFragments] = useState([]);
+
+    useEffect(() => {
+        items.forEach(item => {
+            setItemFragments(arr => [...arr, (
+                <ItemCard category={category}
+                    heading= {item.heading}
+                    description= {item.description}
+                    price= {item.price}
+                />
+            )])
+        })
+    })
+
+    return(
+        <div>
+            <h2>
+                {category}
+            </h2>
+            <br />
+            {itemFragments}
+        </div>
+    );
+
+}
+
+
+
+
+export default MenuFragment;

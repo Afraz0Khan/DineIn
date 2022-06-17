@@ -1,9 +1,8 @@
-import React, { Component, useEffect, useState } from 'react';
-import ItemCard from './card';
+import React, { useEffect, useState } from 'react';
+import MenuFragment from './card';
 import jwtDecode from 'jwt-decode';
-import { useNavigate, useRoutes } from 'react-router';
+import { useNavigate} from 'react-router';
 import axios from 'axios';
-import { ReactDOM } from 'react';
 
 
 
@@ -18,6 +17,7 @@ function Menu(){
 
     useEffect(() => {
         GetMenu()
+        console.log('updated menu')
     }, [menuReady])
 
     useEffect(() => {
@@ -38,27 +38,20 @@ function Menu(){
     }, [])
 
 
-
-    
-
-
     async function GetMenu(){
         const joe = await axios.get('/api/seller/menu', {
             params: {
                 user_email: user_email
             }
         }).then(res => {
-            console.log('then')
-            console.log(menuReady)
             if (menuReady){
                 const data = res.data
                 const main = data.categories.slice(1)
                 main.forEach(element => {
-                    setCats(prevArray => [...prevArray, (<div>
-                        <h2>
-                            {element.category}
-                        </h2>
-                    </div>)])
+                    setCats(prevArray => [...prevArray, 
+                    (
+                        <MenuFragment props= {element} />
+                    )])
                     console.log(element)
                 });
                 console.log(cats)
@@ -72,8 +65,9 @@ function Menu(){
         const response = await axios.post('/api/seller/menu/initiate', {
             categoryName,
             user_email
-        }).then((e) => {
-            console.log(e)
+        }).then(() => {
+            console.log('setmenu false')
+            setMenuReady(false)
         })
     }
 
@@ -119,36 +113,7 @@ function Menu(){
 
 
 
-function MenuFragment(props){
-    const items = props.items // list of objects
-    const category = props.category // string
 
-    const [itemFragments, setItemFragments] = useState();
-
-    useEffect(() => {
-        items.forEach(item => {
-
-            setItemFragments(arr => [...arr, (
-                <ItemCard category={category}
-                    heading= {item.heading}
-                    description= {item.description}
-                    price= {item.price}
-                />
-            )])
-        })
-    })
-
-    return(
-        <div>
-            <h2>
-                {category}
-            </h2>
-            <br />
-            {itemFragments}
-        </div>
-    );
-
-}
 
 
 
