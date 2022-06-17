@@ -15,6 +15,8 @@ const Menu = new mongoose.Schema({
 },
 {collection: 'menus'});
 
+// to do:
+// add IDs to categories and items
 
 module.exports = mongoose.model('Menu', Menu);
 
