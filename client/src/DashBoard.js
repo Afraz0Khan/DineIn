@@ -2,6 +2,12 @@ import React, { useEffect } from 'react';
 import {useNavigate} from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 
+
+
+
+
+// idea: maybe use react bootstrap to create a carousel of restaurant cards ordered by 
+//  different properties like "near you" or "popular" etc.
 function DashBoard(){
 
     const navigate = useNavigate()

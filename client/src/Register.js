@@ -22,7 +22,6 @@ function Register() {
     if (role === 'seller'){     
       const restaurantAddress = resAddress.current
       console.log(restaurantAddress.state.address, resName)
-    }
       const response = await axios.post('/api/users/register', 
         {
           name,
@@ -37,6 +36,17 @@ function Register() {
           console.log(res.data)
         }
       )
+    } else if(role === 'customer'){
+        const response = await axios.post('/api/users/register', {
+          name, 
+          email,
+          password, 
+          role
+        }).then((res) => {
+          console.log(res.data)
+        })
+    }
+      
   }
 
 
