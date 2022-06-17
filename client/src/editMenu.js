@@ -51,7 +51,7 @@ function Menu(){
                 main.forEach(element => {
                     setCats(prevArray => [...prevArray, 
                     (
-                        <MenuFragment props= {element} />
+                        <MenuFragment props= {element} email= {user_email} />
                     )])
                     console.log(element)
                 });

@@ -31,15 +31,23 @@ router.get('/menu', async (req, res) => {
 
 router.post('/menu/:email/:action/:target', async (req, res) => {
     const action = req.params.action
-    
     const email = req.params.email
+
+    console.log(req.params)
 
     const user = await User.findOne({email: email})
     const userId = user._id.valueOf()
+    console.log(user)
+    console.log(userId)
 
     if (action === 'deleteCategory'){
-        const target = "menu.categories" + req.params.target
-        const updatedCategory = await Menu.updateOne({user_id: userId}, {$unset: {[target] : ""}})
+        const unset = {}
+        const target = req.params.target
+        
+        const updatedCategory = await Menu.updateOne({user_id: userId}, {$pull: {"menu.categories": {"category": target}}})
+        console.log(updatedCategory)
+        res.status(200).send(`deleted ${req.params.target}`)
+
     }
 })
 
