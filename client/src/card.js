@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { Component, useState, useEffect } from 'react';
 
 
@@ -20,7 +21,7 @@ function ItemCard(props){
             </div>
         </div>
     );
-}
+} 
 
 
 
@@ -28,9 +29,12 @@ function MenuFragment(props){
     const items = props.props.items // list of objects
     const category = props.props.category // string
     
-    
 
     const [itemFragments, setItemFragments] = useState([]);
+
+    // async function DeleteCategory(){
+    //     const mama = await axios.post(`/api/seller/menu/${}`)
+    // }
 
     useEffect(() => {
         items.forEach(item => {
@@ -49,6 +53,8 @@ function MenuFragment(props){
             <h2>
                 {category}
             </h2>
+            <br />
+            <button onClick={DeleteCategory}>Delete category</button>
             <br />
             {itemFragments}
         </div>

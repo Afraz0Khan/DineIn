@@ -27,14 +27,20 @@ router.get('/menu', async (req, res) => {
 
         res.status(200).send(data.menu)
     }
-    // const user = await User.findOne({email: req.query.user_email})
-    // const userId = user._id.valueOf()
+})
 
-    // const data = await Menu.findOne({user_id: userId})
+router.post('/menu/:email/:action/:target', async (req, res) => {
+    const action = req.params.action
     
-    // console.log(data)
+    const email = req.params.email
 
-    // res.status(200).send(data.menu)
+    const user = await User.findOne({email: email})
+    const userId = user._id.valueOf()
+
+    if (action === 'deleteCategory'){
+        const target = "menu.categories" + req.params.target
+        const updatedCategory = await Menu.updateOne({user_id: userId}, {$unset: {[target] : ""}})
+    }
 })
 
 
