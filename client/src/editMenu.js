@@ -106,6 +106,7 @@ function Menu(){
             <br />
             {AddCategory()}
             {cats}
+            
         </div>
     );
 }

@@ -31,12 +31,20 @@ function MenuFragment(props){
     const email = props.email
 
     const [itemFragments, setItemFragments] = useState([]);
+    const [inAddItem, setInAddItem] = useState(false)
 
     async function DeleteCategory(){
         const mama = await axios.post(`/api/seller/menu/${email}/deleteCategory/${category}`)
             .then((e) => {
                 console.log(e)
             })
+    }
+
+    async function AddItem(){
+        const joe = await axios.post(`/api/seller/menu/${email}/AddItem/${category}`, {
+
+        })
+
     }
 
     useEffect(() => {
@@ -51,6 +59,54 @@ function MenuFragment(props){
         })
     })
 
+    function PromptItem(){
+        const [heading, setHeading] = useState("")
+        const [description, setDescription] = useState("")
+        const [price, setPrice] = useState("")
+
+        const item = {
+            heading,
+            description,
+            price
+        }
+
+        if (inAddItem){
+            return(
+                <div>
+                    <form type="submit" onSubmit={(e) => {
+                        e.preventDefault()
+                        AddItem(item)
+                        setHeading("")
+                        setDescription("")
+                        setPrice("")
+                        setInAddItem(false)
+                    }}>
+                        <input type="text"
+                            placeholder='Heading'
+                            value={heading}
+                            onChange={(e) => setHeading(e.target.value)}
+                        />
+
+                        <input type="text"
+                            placeholder='Description'
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                        />
+
+                        <input type="text"
+                            placeholder='Price'
+                            value={price}
+                            onChange={(e) => setPrice(e.target.value)}
+                        />
+
+                        <input type="submit" value="submit item" /> 
+
+                    </form>
+                </div>
+            );
+        }
+    }
+
     return(
         <div>
             <h2>
@@ -59,6 +115,9 @@ function MenuFragment(props){
             <br />
             <button onClick={DeleteCategory}>Delete category</button>
             <br />
+            <button onClick={() => setInAddItem(true)}>Add Item</button>
+            <br />
+            {PromptItem()}
             {itemFragments}
         </div>
     );

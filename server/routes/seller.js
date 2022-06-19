@@ -41,13 +41,14 @@ router.post('/menu/:email/:action/:target', async (req, res) => {
     console.log(userId)
 
     if (action === 'deleteCategory'){
-        const unset = {}
         const target = req.params.target
         
         const updatedCategory = await Menu.updateOne({user_id: userId}, {$pull: {"menu.categories": {"category": target}}})
         console.log(updatedCategory)
         res.status(200).send(`deleted ${req.params.target}`)
 
+    } else if (action === 'AddItem'){
+        return
     }
 })
 
