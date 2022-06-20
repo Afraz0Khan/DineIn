@@ -40,12 +40,7 @@ function MenuFragment(props){
             })
     }
 
-    async function AddItem(){
-        const joe = await axios.post(`/api/seller/menu/${email}/AddItem/${category}`, {
-
-        })
-
-    }
+    
 
     useEffect(() => {
         items.forEach(item => {
@@ -69,6 +64,16 @@ function MenuFragment(props){
             description,
             price
         }
+
+
+        async function AddItem(){
+            const joe = await axios.post(`/api/seller/menu/${email}/AddItem/${category}`, item)
+            .then(() => {
+                console.log("request sent successfully")
+            })
+        }
+
+
 
         if (inAddItem){
             return(

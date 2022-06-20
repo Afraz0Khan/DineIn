@@ -48,7 +48,28 @@ router.post('/menu/:email/:action/:target', async (req, res) => {
         res.status(200).send(`deleted ${req.params.target}`)
 
     } else if (action === 'AddItem'){
-        return
+        const target = req.params.target
+        const body = req.body
+        console.log(body)
+        const obj = {
+            "heading": body.heading,
+            "description": body.description,
+            "price": body.price
+        }
+
+        const push_obj = {}
+        push_obj["items"] = obj
+
+        const joe = {}
+        joe[target]
+        
+        
+        const addedItem = await Menu.updateOne({user_id: userId, "menu.categories.category": target},
+            {$push: 
+                {"menu.categories.$.items": obj}
+            }
+        )
+        console.log(addedItem)
     }
 })
 
