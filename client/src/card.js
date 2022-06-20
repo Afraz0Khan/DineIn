@@ -27,6 +27,7 @@ function ItemCard(props){
 
 function MenuFragment(props){
     const items = props.props.items // list of objects
+    console.log('got items')
     const category = props.props.category // string
     const email = props.email
 
@@ -42,6 +43,8 @@ function MenuFragment(props){
 
 
     useEffect(() => {
+        console.log('in useEffect')
+        setItemFragments([])
         items.forEach(item => {
             setItemFragments(arr => [...arr, (
                 <ItemCard category={category}
