@@ -40,7 +40,6 @@ function MenuFragment(props){
             })
     }
 
-    
 
     useEffect(() => {
         items.forEach(item => {
@@ -52,7 +51,7 @@ function MenuFragment(props){
                 />
             )])
         })
-    })
+    }, [])
 
     function PromptItem(){
         const [heading, setHeading] = useState("")
