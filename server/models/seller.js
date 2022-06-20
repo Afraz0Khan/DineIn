@@ -20,7 +20,7 @@ const Seller = new mongoose.Schema({
         required: true
     },
     resAddress: {
-        type: String,
+        type: Object,
         required: true
     },
     role:{

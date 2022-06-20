@@ -28,7 +28,7 @@ function Register() {
           email,
           password,
           resName,
-          resAddress: resAddress.current.state.address,
+          resAddress: resAddress.current.state,
           role
         }
       ).then(
