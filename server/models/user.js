@@ -15,6 +15,9 @@ const User = new mongoose.Schema({
         type: String,
         required: true
     },
+    addresses: {
+        type: Array
+    },
     role:{
         type: String,
         required: true

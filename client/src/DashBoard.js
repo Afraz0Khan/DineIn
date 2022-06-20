@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {useNavigate} from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 import LocationSearchInput from './placeComplete';
+import axios from 'axios';
 
 
 
@@ -10,6 +11,7 @@ import LocationSearchInput from './placeComplete';
 // different properties like "near you" or "popular" etc.
 function DashBoard(){
 
+    const [userDbLocation, setUserDbLocation] = useState("");
     const [userLocation, setUserLocation] = useState(React.createRef());
     const [inLocation, setInLocation] = useState(false)
     const navigate = useNavigate()
@@ -22,22 +24,54 @@ function DashBoard(){
             if (!user){
                 localStorage.removeItem('token')
                 navigate('/login')
+            } else {
+                GetUserData()
             }
         } else {
             navigate('/login')
         }
+
     }, [])
+
+    async function GetUserData(){
+        const email = jwtDecode(localStorage.getItem('token')).email
+        console.log(email)
+        const joe = await axios.get(`/api/users/${jwtDecode(localStorage.getItem('token')).email}`)
+            .then((res) => {
+                
+                setUserDbLocation(res.data.addresses)
+            })
+    }
 
     function LogOut(){
         localStorage.removeItem('token')
         navigate('/login')
     }
 
+    async function OnLocationSubmit(){
+        const email = jwtDecode(localStorage.getItem('token')).email
+        console.log(email)
+        console.log(userLocation)
+        const sent = await axios.post(`api/users/register/address/${email}`, {
+            address: userLocation.current.state
+        }).then((res) => {
+            console.log(res)
+        })
+    }
+
     function GetUserLocation(){
+
         if (inLocation){
             return(
                 <div>
-                    <LocationSearchInput ref={userLocation} />
+                    <form onSubmit={(e) => {
+                        e.preventDefault()
+                        OnLocationSubmit()
+                        setInLocation(false)
+                    }}>
+                        <LocationSearchInput ref={userLocation} />
+                        <input type='submit' value='set' />
+                    </form>
                 </div>
             );
         }
@@ -49,10 +83,8 @@ function DashBoard(){
                 Your Location:
             </h4>
             <br />
-            <h5>
-                {userLocation.current}
-            </h5>
-            <button onClick={() => setInLocation(true)}>joe</button>
+            <h5>{userDbLocation}</h5>
+            <button onClick={() => setInLocation(true)}>Change Location</button>
             <GetUserLocation />
             
             <h1>
