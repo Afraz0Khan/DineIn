@@ -59,10 +59,6 @@ router.post('/menu/:email/:action/:target', async (req, res) => {
 
         const push_obj = {}
         push_obj["items"] = obj
-
-        const joe = {}
-        joe[target]
-        
         
         const addedItem = await Menu.updateOne({user_id: userId, "menu.categories.category": target},
             {$push: 
