@@ -46,7 +46,7 @@ router.post('/register', async (req, res) => {
     } catch(err){
 
         if (await User.findOne({email: req.body.email})){
-            console.log(await User.findOne({email: req.body.email}))
+            
             return res.json({user: 'exists'})
         } else {
             console.log(err)
