@@ -11,7 +11,10 @@ import axios from 'axios';
 // different properties like "near you" or "popular" etc.
 function DashBoard(){
 
-    const [userDbLocation, setUserDbLocation] = useState("");
+
+    const [pageReady, setPageReady] = useState(false)
+
+    const [userDbLocation, setUserDbLocation] = useState([]);
     const [userLocation, setUserLocation] = useState(React.createRef());
     const [inLocation, setInLocation] = useState(false);
     const [nearby, setNearby] = useState([]);
@@ -19,6 +22,7 @@ function DashBoard(){
     const navigate = useNavigate()
 
     useEffect(() => {
+
         const token = localStorage.getItem('token')
         
         if (token){
@@ -27,10 +31,7 @@ function DashBoard(){
                 localStorage.removeItem('token')
                 navigate('/login')
             } else {
-                GetUserData()
-                .then(() => {
-                    GetNearby()
-                })
+                setPageReady(true)
             }
         } else {
             navigate('/login')
@@ -38,15 +39,38 @@ function DashBoard(){
 
     }, [])
 
+    useEffect(() => {
+        if (pageReady){
+            GetUserData()
+            .then(() => {
+                console.log('in cb')
+                console.log(userDbLocation)
+                GetNearby()
+                .then(() => {
+                    console.log('in nearby cb')
+                })
+            })
+        }
+    }, [pageReady])
+
+    
+
     async function GetUserData(){
         const jj = jwtDecode(localStorage.getItem('token'))
         const user_email = jj.email
-        console.log(user_email)
         console.log('email extracted')
         const joe = await axios.get(`/api/users/${user_email}`)
             .then((res) => {
                 console.log(res.data)
-                setUserDbLocation(res.data.addresses[0].address)
+                
+                // make this a one liner
+                setUserDbLocation(prevArr => [...prevArr,
+                    res.data.addresses[0].address
+                ])
+                setUserDbLocation(prevArr => [...prevArr,
+                    res.data.addresses[0].coords
+                ])
+                console.log(userDbLocation)
             })
     }
 
@@ -99,7 +123,7 @@ function DashBoard(){
                 Your Location:
             </h4>
             <br />
-            <h5>{userDbLocation}</h5>
+            <h5>{userDbLocation[0]}</h5>
             <button onClick={() => setInLocation(true)}>Change Location</button>
             <GetUserLocation />
             
