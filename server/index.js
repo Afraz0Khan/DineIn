@@ -3,6 +3,7 @@ const cors = require('cors')
 const mongoose = require('mongoose');
 const users = require('./routes/users');
 const seller = require('./routes/seller');
+const customer = require('./routes/customer');
 const bodyParser = require('body-parser');
 const app = express();
 
@@ -33,10 +34,9 @@ mongoose.connect(
 
 app.use('/api/users', users);
 
-app.use('/api/seller', seller)
+app.use('/api/seller', seller);
 
-
-
+app.use('/api/customer', customer);
 
 
 app.listen(PORT , () => {

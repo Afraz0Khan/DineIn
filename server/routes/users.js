@@ -23,7 +23,7 @@ router.post('/register', async (req, res) => {
             
             res.status(200).send('customer created')
         } else if (req.body.role === 'seller'){
-          
+            console.log(req.body.resAddress)
             const seller = await Seller.create({
                 name: req.body.name,
                 email: req.body.email,

@@ -13,7 +13,9 @@ function DashBoard(){
 
     const [userDbLocation, setUserDbLocation] = useState("");
     const [userLocation, setUserLocation] = useState(React.createRef());
-    const [inLocation, setInLocation] = useState(false)
+    const [inLocation, setInLocation] = useState(false);
+    const [nearby, setNearby] = useState([]);
+
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -26,6 +28,9 @@ function DashBoard(){
                 navigate('/login')
             } else {
                 GetUserData()
+                .then(() => {
+                    GetNearby()
+                })
             }
         } else {
             navigate('/login')
@@ -43,6 +48,15 @@ function DashBoard(){
                 console.log(res.data)
                 setUserDbLocation(res.data.addresses[0].address)
             })
+    }
+
+    async function GetNearby(){
+        const locations = await axios.get('/api/customer/nearby', {
+            coords: userDbLocation
+        })
+        .then(res => {
+            console.log('j')
+        })
     }
 
     function LogOut(){
