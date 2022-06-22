@@ -11,7 +11,7 @@ import axios from 'axios';
 // different properties like "near you" or "popular" etc.
 function DashBoard(){
 
-    const [userDbLocation, setUserDbLocation] = useState("");
+    const [userDbLocation, setUserDbLocation] = useState([]);
     const [userLocation, setUserLocation] = useState(React.createRef());
     const [inLocation, setInLocation] = useState(false)
     const navigate = useNavigate()
@@ -34,11 +34,13 @@ function DashBoard(){
     }, [])
 
     async function GetUserData(){
-        const email = jwtDecode(localStorage.getItem('token')).email
-        console.log(email)
-        const joe = await axios.get(`/api/users/${jwtDecode(localStorage.getItem('token')).email}`)
+        const jj = jwtDecode(localStorage.getItem('token'))
+        const user_email = jj.email
+        console.log(user_email)
+        console.log('email extracted')
+        const joe = await axios.get(`/api/users/${user_email}`)
             .then((res) => {
-                
+                console.log(res.data)
                 setUserDbLocation(res.data.addresses)
             })
     }

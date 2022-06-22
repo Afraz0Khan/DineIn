@@ -46,6 +46,7 @@ router.post('/register', async (req, res) => {
     } catch(err){
 
         if (await User.findOne({email: req.body.email})){
+            console.log(await User.findOne({email: req.body.email}))
             return res.json({user: 'exists'})
         } else {
             console.log(err)
@@ -76,6 +77,7 @@ router.post('/login', async (req, res) => {
 
 router.post('/register/address/:email', async (req, res) => {
     const address_obj = req.body.address
+    
     console.log(address_obj)
     const momo = await User.updateOne({email: req.params.email}, {$push: {"addresses": address_obj}})
         .then(() => {
@@ -85,8 +87,9 @@ router.post('/register/address/:email', async (req, res) => {
 
 
 router.get('/:email', async (req, res) => {
-    const yoyo = User.findOne({email: req.params.email})
-    console.log(yoyo)
+    console.log(req.params.email)
+    const yoyo = await User.findOne({"email": req.params.email})
+
     res.status(200).send(yoyo)
 })
 
