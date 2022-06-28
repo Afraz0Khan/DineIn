@@ -42,12 +42,15 @@ function DashBoard(){
     useEffect(() => {
         if (pageReady){
             GetUserData()
-            .then(() => {
-                console.log('in cb')
-                console.log(userDbLocation)
-                GetNearby()
-                .then(() => {
-                    console.log('in nearby cb')
+            .then(async () => {
+                const locations = await axios.get(`/api/customer/nearby`, {
+                    params: {
+                        longitude: userDbLocation[1].lng,
+                        latitude: userDbLocation[1].lat
+                    }
+                })
+                .then((res) => {
+                    console.log(res)
                 })
             })
         }
@@ -62,26 +65,21 @@ function DashBoard(){
         const joe = await axios.get(`/api/users/${user_email}`)
             .then((res) => {
                 console.log(res.data)
+                if (res.data.addresses.length != 0){
+                    setUserDbLocation(prevArr => [...prevArr,
+                        res.data.addresses[0].address
+                    ])
+
+                    console.log(userDbLocation)
+                    setUserDbLocation(prevArr => [...prevArr,
+                        res.data.addresses[0].coords
+                    ])
+                    console.log(userDbLocation)
+                }
                 
-                // make this a one liner
-                setUserDbLocation(prevArr => [...prevArr,
-                    res.data.addresses[0].address
-                ])
-                setUserDbLocation(prevArr => [...prevArr,
-                    res.data.addresses[0].coords
-                ])
-                console.log(userDbLocation)
             })
     }
 
-    async function GetNearby(){
-        const locations = await axios.get('/api/customer/nearby', {
-            coords: userDbLocation
-        })
-        .then(res => {
-            console.log('j')
-        })
-    }
 
     function LogOut(){
         localStorage.removeItem('token')

@@ -30,6 +30,10 @@ router.post('/register', async (req, res) => {
                 password: pwd,
                 resName: req.body.resName,
                 resAddress: req.body.resAddress,
+                loc: {
+                    type: "Point",
+                    coordinates: [req.body.coordinates.lng, req.body.coordinates.lat]
+                },
                 role: req.body.role
             })
             

@@ -20,6 +20,10 @@ const Seller = new mongoose.Schema({
         required: true
     },
     resAddress: {
+        type: String,
+        required: true
+    },
+    loc: {
         type: Object,
         required: true
     },

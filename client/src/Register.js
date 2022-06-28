@@ -21,14 +21,18 @@ function Register() {
     e.preventDefault();
     if (role === 'seller'){     
       const restaurantAddress = resAddress.current
-      console.log(restaurantAddress.state.address, resName)
+      console.log(restaurantAddress.state.address, resName, resAddress.current.state)
       const response = await axios.post('/api/users/register', 
         {
           name,
           email,
           password,
           resName,
-          resAddress: resAddress.current.state,
+          resAddress: resAddress.current.state.address,
+          coordinates: {
+            lng: resAddress.current.state.coords.lng,
+            lat: resAddress.current.state.coords.lat
+          },
           role
         }
       ).then(
