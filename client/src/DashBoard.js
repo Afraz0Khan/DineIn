@@ -13,6 +13,7 @@ function DashBoard(){
 
 
     const [pageReady, setPageReady] = useState(false)
+    const [userDataReady, setUserDataReady] = useState(false)
 
     const [userDbLocation, setUserDbLocation] = useState([]);
     const [userLocation, setUserLocation] = useState(React.createRef());
@@ -39,22 +40,25 @@ function DashBoard(){
 
     }, [])
 
+
     useEffect(() => {
         if (pageReady){
             GetUserData()
             .then(async () => {
-                const locations = await axios.get(`/api/customer/nearby`, {
-                    params: {
-                        longitude: userDbLocation[1].lng,
-                        latitude: userDbLocation[1].lat
-                    }
-                })
-                .then((res) => {
-                    console.log(res)
-                })
-            })
+                if (userDataReady){
+                    console.log('in data ready')
+                    const locations = await axios.get(`/api/customer/nearby`, {
+                        params: {
+                            longitude: userDbLocation[1].lng,
+                            latitude: userDbLocation[1].lat
+                        }
+                    })
+                    .then((res) => {
+                        console.log(res)
+                    })
+            }})
         }
-    }, [pageReady])
+    }, [pageReady, userDataReady])
 
     
 
@@ -70,15 +74,16 @@ function DashBoard(){
                         res.data.addresses[0].address
                     ])
 
-                    console.log(userDbLocation)
                     setUserDbLocation(prevArr => [...prevArr,
                         res.data.addresses[0].coords
                     ])
                     console.log(userDbLocation)
+                    setUserDataReady(true)
                 }
                 
             })
     }
+
 
 
     function LogOut(){
