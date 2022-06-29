@@ -25,6 +25,9 @@ function DashBoard(){
     useEffect(() => {
 
         const token = localStorage.getItem('token')
+        setPageReady(false)
+        setUserDataReady(false)
+        setUserDbLocation([])
         
         if (token){
             const user = jwtDecode(token)
@@ -134,6 +137,7 @@ function DashBoard(){
                 hi customer
             </h1>
             <br />
+            <h4>Showing restaurants near you:</h4><br />
             <input type='button' value="Logout" onClick={LogOut} />
         </div>
     );
