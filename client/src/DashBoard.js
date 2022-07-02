@@ -3,6 +3,7 @@ import {useNavigate} from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 import LocationSearchInput from './placeComplete';
 import axios from 'axios';
+import SellerCard from './seller_card';
 
 
 
@@ -57,7 +58,17 @@ function DashBoard(){
                         }
                     })
                     .then((res) => {
-                        console.log(res)
+                        setNearby([])
+                        for(let i = 0; i<res.data.length; i++){
+                            const element = res.data[i];
+                            setNearby(arr => [
+                                ...arr, <SellerCard
+                                    heading={element.resName}
+                                    address={element.resAddress}
+                                />
+                            ])
+                            console.log(res.data[i])
+                        }
                     })
             }})
         }
@@ -138,6 +149,7 @@ function DashBoard(){
             </h1>
             <br />
             <h4>Showing restaurants near you:</h4><br />
+            {nearby} <br />
             <input type='button' value="Logout" onClick={LogOut} />
         </div>
     );

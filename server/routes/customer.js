@@ -18,12 +18,13 @@ router.get('/nearby', async (req, res) => {
         $geoWithin: {
             $centerSphere:[
                 [req.query.longitude, req.query.latitude],
-                KmstoRadian(1)
+                KmstoRadian(12)
             ]
         }
-    }})
-    console.log(restaurants)
-    res.status(200).send('pk')
+    }}, {
+        password: 0
+    })
+    res.status(200).send(restaurants)
 })
 
 
