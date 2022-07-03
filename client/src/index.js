@@ -7,6 +7,7 @@ import DashBoard2 from './Dashboard2';
 import Menu from './editMenu';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Reservation from './reservation';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -19,6 +20,7 @@ root.render(
         <Route path='/dashboard' element={<DashBoard />} />
         <Route path='/seller_dashboard' element={<DashBoard2 />} />
         <Route path='/menu' element={<Menu />} />
+        <Route path='/dashboard/reserve' element={<Reservation />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

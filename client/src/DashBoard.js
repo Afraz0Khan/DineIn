@@ -134,6 +134,10 @@ function DashBoard(){
         }
     }
 
+
+
+    // add routes for reservation, Dine in (for no reservation), Chat, Grocery (later), Budget
+    // Dine-is is the default route for dashboard
     return(
         <div>
             <h4>
@@ -147,6 +151,11 @@ function DashBoard(){
             <h1>
                 hi customer
             </h1>
+            <br />
+            <button onClick={() => {
+                navigate('/dashboard/reserve')
+            }}>Reservations</button>
+            <h2>Let's Dine-in!</h2>
             <br />
             <h4>Showing restaurants near you:</h4><br />
             {nearby} <br />
