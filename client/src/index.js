@@ -8,6 +8,7 @@ import Menu from './editMenu';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Reservation from './reservation';
+import CheckIns from './checkins';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -20,7 +21,13 @@ root.render(
         <Route path='/dashboard' element={<DashBoard />} />
         <Route path='/seller_dashboard' element={<DashBoard2 />} />
         <Route path='/menu' element={<Menu />} />
+        <Route path='/checkins' element={<CheckIns />} />
         <Route path='/dashboard/reserve' element={<Reservation />} />
+
+        // create a different session for dine in. Maybe make an animation that is custom to restaurants. 
+        // make a check in function and use that when the person clicks to dinein. 
+        // the customer is checked in and then they await the restaurant's response.
+        {/* <Route path='/dashboard/dinein' element={<DineIn />} /> */}
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

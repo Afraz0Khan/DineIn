@@ -1,5 +1,5 @@
 import React, { Component, useState } from 'react';
-
+import DateTimePicker from 'react-datetime-picker';
 
 
 function SellerCard(props){
@@ -15,8 +15,12 @@ function SellerCard(props){
 
 
     const [resID, setResID] = useState('');
+    const [willReserve, setWillReserve] = useState(false);
 
 
+    function OnDineIn(){
+        
+    }
 
 
     return(
@@ -26,7 +30,9 @@ function SellerCard(props){
             <div style={{display: 'flex'}}>
                 <div style={{marginLeft: '20px', display: 'flex'}}>
                     <p>{props.address}</p>
-                    <p>{props.rating}</p>
+                    {/* <p>{props.rating}</p> */}
+                    <button onClick={OnDineIn()}>Dine In</button>
+                    <button>Reserve</button>
                 </div>
             </div>
         </div>

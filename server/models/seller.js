@@ -30,6 +30,14 @@ const Seller = new mongoose.Schema({
     role:{
         type: String,
         required: true
+    },
+    reservations:{
+        type: Array,
+        required: false
+    },
+    dineins:{
+        type: Array,
+        required: false
     }
 },
 {collection: "user-data"})

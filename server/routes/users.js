@@ -91,9 +91,9 @@ router.post('/register/address/:email', async (req, res) => {
 
 
 router.get('/:email', async (req, res) => {
-    const yoyo = await User.findOne({"email": req.params.email})
+    const user = await User.findOne({"email": req.params.email})
 
-    res.status(200).send(yoyo)
+    res.status(200).send(user)
 })
 
 

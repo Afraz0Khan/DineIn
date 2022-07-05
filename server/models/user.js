@@ -18,6 +18,14 @@ const User = new mongoose.Schema({
     addresses: {
         type: Array
     },
+    dineStatus: {
+        type: Object
+        // (customer can send only one request at a time)
+        // {
+        //      status: 'pending/dining/(off) -> default',
+        //      restaurantId: 'xyzabc123456'
+        // }
+    },
     role:{
         type: String,
         required: true

@@ -1,9 +1,8 @@
-import React, { Component, useState } from 'react';
+import React from 'react';
 import { useEffect } from 'react';
 import jwtDecode from 'jwt-decode';
-import { useNavigate, useRoutes } from 'react-router';
+import { useNavigate } from 'react-router';
 import axios from 'axios';
-import ItemCard from './card';
 
 
 
@@ -51,6 +50,9 @@ function DashBoard2(){
             <button>View Orders</button>
             <br />
             <br />
+            <button onClick={() => {
+                navigate('/checkins')
+            }}>Check ins</button>
             <br />
             <br />
             
