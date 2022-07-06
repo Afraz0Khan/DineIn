@@ -65,6 +65,7 @@ function DashBoard(){
                                 ...arr, <SellerCard
                                     heading={element.resName}
                                     address={element.resAddress}
+                                    resId={element._id}
                                 />
                             ])
                             console.log(res.data[i])
@@ -158,7 +159,8 @@ function DashBoard(){
             <h2>Let's Dine-in!</h2>
             <br />
             <h4>Showing restaurants near you:</h4><br />
-            {nearby} <br />
+            {nearby} 
+            <br />
             <input type='button' value="Logout" onClick={LogOut} />
         </div>
     );

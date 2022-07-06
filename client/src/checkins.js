@@ -6,13 +6,22 @@ import jwtDecode from 'jwt-decode';
 
 function CheckIns(){
 
-    const [currentDineIns, setCurrentDineIns] = useState([]);
-
+    const [dineIns, setDineIns] = useState([]);
     const navigate = useNavigate();
+    
 
-    useEffect( async () => {
+    useEffect(() => {
         // auth cuz protected route
         
+        async function UserData(user){
+            const user_data = await axios.get(`/api/users/${user.email}`)
+                .then((res) => {
+                    const info = res.data.reservations
+                    setDineIns(info)
+                    console.log(dineIns)
+                    // res.data.dineins: [{name: 'joe', email: 'joe@gmail.com', time: '6413684639'}, ]
+                }) 
+        }
         const token = localStorage.getItem('token')
             if (token){
                 const user = jwtDecode(token)
@@ -20,16 +29,30 @@ function CheckIns(){
                     localStorage.removeItem('token')
                     navigate('/login')
                 } else {
-                    const user = await axios.get(`/api/users/${user.email}`)
-                        .then((res) => {
-                            const info = res.data.dineins
-                        })  
+                    UserData(user) 
                 }
             } else {
                 navigate('/login')
             }
-        const user = await axios.get('/api/users/')
     })
+
+    function CheckIn(){
+        return
+    }
+
+    function Person(props){
+        return(
+            <div>
+                <h3>{props.name}</h3>
+                <br />
+                <h4>{props.email}</h4>
+                <br />
+                <h5>time: {props.time}</h5>
+                <br />
+                <button onClick={CheckIn}>Check-in</button>
+            </div>
+        );
+    }
 
     return(
         <div>

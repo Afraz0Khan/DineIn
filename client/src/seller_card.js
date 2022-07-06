@@ -1,5 +1,7 @@
+import axios from 'axios';
 import React, { Component, useState } from 'react';
 import DateTimePicker from 'react-datetime-picker';
+import jwtDecode from 'jwt-decode';
 
 
 function SellerCard(props){
@@ -13,13 +15,23 @@ function SellerCard(props){
     // 1. Reserve button
     // 2. Dine in button
 
-
-    const [resID, setResID] = useState('');
     const [willReserve, setWillReserve] = useState(false);
+    const [reservation, setReservation] = useState({});
 
 
-    function OnDineIn(){
-        
+    async function OnDineIn(){
+        const token = localStorage.getItem('token')
+        const user = jwtDecode(token)
+        const date = new window.Date();
+        const reservationDate = date.toString()
+        await axios.post(`/api/seller/reserve/${props.resId}`, {
+            reservation: {
+                time: reservationDate,
+                email: user.email
+            }
+        }).then((res) => {
+            console.log(res)
+        })
     }
 
 
@@ -31,7 +43,7 @@ function SellerCard(props){
                 <div style={{marginLeft: '20px', display: 'flex'}}>
                     <p>{props.address}</p>
                     {/* <p>{props.rating}</p> */}
-                    <button onClick={OnDineIn()}>Dine In</button>
+                    <button onClick={OnDineIn}>Dine In</button>
                     <button>Reserve</button>
                 </div>
             </div>

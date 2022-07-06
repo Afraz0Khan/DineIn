@@ -70,6 +70,22 @@ router.post('/menu/:email/:action/:target', async (req, res) => {
 })
 
 
+router.post('/reserve/:resId', async (req, res) => {
+    const resId = req.params.resId
+    const reservation = req.body.reservation
+    console.log(reservation)
+    
+
+
+    const restaurant = await User.updateOne({_id: resId}, {$push: {"reservations": reservation}})
+
+    console.log(restaurant)
+
+    
+})
+
+
+
 
 
 module.exports = router;
