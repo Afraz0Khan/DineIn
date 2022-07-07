@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
 const Menu = require('../models/menu');
-
+const Seller = require('../models/seller');
 
 
 
@@ -70,16 +70,17 @@ router.post('/menu/:email/:action/:target', async (req, res) => {
 })
 
 
-router.post('/reserve/:resId', async (req, res) => {
-    const resId = req.params.resId
-    const reservation = req.body.reservation
-    console.log(reservation)
-    
+router.post('/reserve', async (req, res) => {
+    const resId = req.body.resId
+    const reservation = {
+        email: req.body.email,
+        time: req.body.time
+    }
+    console.log(resId, reservation)
 
+    const restaurant = await Seller.updateOne({_id: resId}, {$push: {"reservations": reservation}})
 
-    const restaurant = await User.updateOne({_id: resId}, {$push: {"reservations": reservation}})
-
-    console.log(restaurant)
+    res.send(restaurant).status(200)
 
     
 })

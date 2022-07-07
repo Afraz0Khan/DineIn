@@ -24,11 +24,10 @@ function SellerCard(props){
         const user = jwtDecode(token)
         const date = new window.Date();
         const reservationDate = date.toString()
-        await axios.post(`/api/seller/reserve/${props.resId}`, {
-            reservation: {
-                time: reservationDate,
-                email: user.email
-            }
+        const reservationPost = await axios.post('/api/seller/reserve', {
+            resId: props.resId,
+            time: reservationDate,
+            email: user.email
         }).then((res) => {
             console.log(res)
         })
