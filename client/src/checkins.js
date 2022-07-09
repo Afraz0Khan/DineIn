@@ -26,6 +26,7 @@ function CheckIns(){
                 } else {
                     setUserEmail(user.email)
                     setRequestReady(true)
+                    setDineIns([])
                 }
             } else {
                 navigate('/login')
@@ -35,14 +36,16 @@ function CheckIns(){
 
     useEffect(() => {
         console.log('here')
+        
         if (requestReady && userEmail.length != 0){
             console.log('inside')
+            
             UserData(userEmail)
             if (dineIns.length != 0){
                 setRequestReady(false)
             }
         }
-    }, [userEmail, dineIns])
+    }, [userEmail && dineIns])
 
 
 
@@ -50,17 +53,32 @@ function CheckIns(){
         const user_data = await axios.get(`/api/users/${user_email}`)
             .then((res) => {
                 const info = res.data.reservations
-                setDineIns(info)
+                info.forEach(item => {
+                    setDineIns(arr => [...arr, (
+                        <Person 
+                            email = {item.email}
+                            time = {item.time}
+                        />
+                    )])
+                })
                 console.log(dineIns)
         }) 
     }
 
 
-    async function CheckIn(){
-        
-    }
+    
 
     function Person(props){
+
+        async function CheckIn(){
+            const check = await axios.post(`/api/seller/checkIn/${props.email}`, {
+                resEmail: userEmail
+            })
+            .then((res) => {
+                console.log(res)
+            })
+        }
+
         return(
             <div>
                 <h3>{props.name}</h3>
@@ -77,9 +95,13 @@ function CheckIns(){
     return(
         <div>
             <h3>hi</h3>
+            <br />
+            {dineIns}
         </div>
     );
 }
+
+
 
 
 

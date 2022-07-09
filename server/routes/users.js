@@ -18,7 +18,11 @@ router.post('/register', async (req, res) => {
                 name: req.body.name,
                 email: req.body.email,
                 password: pwd,
-                role: req.body.role
+                role: req.body.role,
+                dineStatus: {
+                    status: '',
+                    restaurantId: ''
+                }
             })
             
             res.status(200).send('customer created')

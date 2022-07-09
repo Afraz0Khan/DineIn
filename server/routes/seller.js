@@ -81,8 +81,27 @@ router.post('/reserve', async (req, res) => {
     const restaurant = await Seller.updateOne({_id: resId}, {$push: {"reservations": reservation}})
 
     res.send(restaurant).status(200)
-
     
+})
+
+router.post('/checkIn/:customer_email', async (req, res) => {
+
+    console.log(req.params.customer_email, req.body.resEmail)
+
+    const restaurant = await Seller.findOne({email: req.body.resEmail})
+
+    const resId = restaurant._id.valueOf()
+
+    console.log(resId)
+
+    const customer = await User.updateOne({email: req.params.customer_email}, {$set: {
+        dineStatus: {
+            status: 'dining',
+            restaurantId: resId
+        }
+    }})
+
+    res.send(customer).status(200)
 })
 
 
