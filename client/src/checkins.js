@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import jwtDecode from 'jwt-decode';
 
@@ -7,8 +7,11 @@ import jwtDecode from 'jwt-decode';
 function CheckIns(){
 
     const [dineIns, setDineIns] = useState([]);
-    const [GETready, setGETready] = useState(false);
+
+    // for 2 useEffects
+    const [requestReady, setRequestReady] = useState(false);
     const [userEmail, setUserEmail] = useState('');
+
     const navigate = useNavigate();
     
 
@@ -22,7 +25,7 @@ function CheckIns(){
                     navigate('/login')
                 } else {
                     setUserEmail(user.email)
-                    setGETready(true)
+                    setRequestReady(true)
                 }
             } else {
                 navigate('/login')
@@ -30,28 +33,31 @@ function CheckIns(){
     }, [])
 
 
-
     useEffect(() => {
-        async function UserData(user_email){
-            const user_data = await axios.get(`/api/users/${user_email}`)
-                .then((res) => {
-                    const info = res.data.reservations
-                    setDineIns(info)
-                    console.log(dineIns)
-                    // res.data.dineins: [{name: 'joe', email: 'joe@gmail.com', time: '6413684639'}, ]
-            }) 
-        }
-
-        if (GETready){
-            console.log('joe')
+        console.log('here')
+        if (requestReady && userEmail.length != 0){
+            console.log('inside')
             UserData(userEmail)
-            console.log('hoe')
-        }    
+            if (dineIns.length != 0){
+                setRequestReady(false)
+            }
+        }
+    }, [userEmail, dineIns])
 
-    }, [GETready])
 
-    function CheckIn(){
-        return 
+
+    async function UserData(user_email){
+        const user_data = await axios.get(`/api/users/${user_email}`)
+            .then((res) => {
+                const info = res.data.reservations
+                setDineIns(info)
+                console.log(dineIns)
+        }) 
+    }
+
+
+    async function CheckIn(){
+        
     }
 
     function Person(props){
