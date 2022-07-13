@@ -53,6 +53,7 @@ function CheckIns(){
         const user_data = await axios.get(`/api/users/${user_email}`)
             .then((res) => {
                 const info = res.data.reservations
+                setDineIns([])
                 info.forEach(item => {
                     setDineIns(arr => [...arr, (
                         <Person 
@@ -81,8 +82,6 @@ function CheckIns(){
 
         return(
             <div>
-                <h3>{props.name}</h3>
-                <br />
                 <h4>{props.email}</h4>
                 <br />
                 <h5>time: {props.time}</h5>

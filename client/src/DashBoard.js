@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, useResolvedPath} from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 import LocationSearchInput from './placeComplete';
 import axios from 'axios';
@@ -21,14 +21,19 @@ function DashBoard(){
     const [inLocation, setInLocation] = useState(false);
     const [nearby, setNearby] = useState([]);
 
+    const [dineRes, setDineRes] = useState('');
+    const [dineStatus, setDineStatus] = useState('');
+
     const navigate = useNavigate()
 
     useEffect(() => {
 
+        // setPageReady(false)
+        // setUserDataReady(false)
+        // setUserDbLocation([])
+        
+
         const token = localStorage.getItem('token')
-        setPageReady(false)
-        setUserDataReady(false)
-        setUserDbLocation([])
         
         if (token){
             const user = jwtDecode(token)
@@ -68,14 +73,13 @@ function DashBoard(){
                                     resId={element._id}
                                 />
                             ])
-                            console.log(res.data[i])
                         }
                     })
             }})
         }
     }, [pageReady, userDataReady])
 
-    
+
 
     async function GetUserData(){
         const jj = jwtDecode(localStorage.getItem('token'))
@@ -83,8 +87,8 @@ function DashBoard(){
         console.log('email extracted')
         const joe = await axios.get(`/api/users/${user_email}`)
             .then((res) => {
-                console.log(res.data)
-                if (res.data.addresses.length != 0){
+
+                if (res.data.addresses.length !== 0){
                     setUserDbLocation(prevArr => [...prevArr,
                         res.data.addresses[0].address
                     ])
@@ -92,13 +96,19 @@ function DashBoard(){
                     setUserDbLocation(prevArr => [...prevArr,
                         res.data.addresses[0].coords
                     ])
-                    console.log(userDbLocation)
+
+                    const status = res.data.dineStatus
+                    
+                    if (status.status !== ''){
+                        setDineRes(status.restaurantId)
+                        setDineStatus(status.status)
+                    }
+                    
                     setUserDataReady(true)
                 }
                 
             })
     }
-
 
 
     function LogOut(){
@@ -135,6 +145,40 @@ function DashBoard(){
         }
     }
 
+    function DineInNotif(){
+
+        const [resName, setResName] = useState('');
+        const [resAddress, setResAddress] = useState('');
+
+
+        useEffect(() => {
+            if (dineRes !== ''){
+                async function DineInInfo(){
+                    console.log(dineRes)
+                    const url = `/api/users/id/${dineRes}`
+                    const data = await axios.get(url)
+                    .then((res) => {
+                        const user = res.data
+                        setResAddress(user.resAddress)
+                        setResName(user.resName)
+                    })
+                }
+
+                DineInInfo()
+                
+            }
+        }, [dineRes])
+  
+        return(
+            <div>
+                <h6>{resName}</h6>
+                <br />
+                <h6>{dineStatus}</h6>
+                <br />
+                <h6>{resAddress}</h6>
+            </div>
+        );
+    }
 
 
     // add routes for reservation, Dine in (for no reservation), Chat, Grocery (later), Budget
@@ -152,6 +196,7 @@ function DashBoard(){
             <h1>
                 hi customer
             </h1>
+            <DineInNotif />
             <br />
             <button onClick={() => {
                 navigate('/dashboard/reserve')

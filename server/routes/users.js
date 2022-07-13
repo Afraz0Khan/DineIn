@@ -8,6 +8,7 @@ const Menu = require('../models/menu');
 
 
 
+
 router.post('/register', async (req, res) => {
     const pwd = await bcrypt.hash(req.body.password, 10)
     console.log(pwd)
@@ -97,6 +98,12 @@ router.post('/register/address/:email', async (req, res) => {
 router.get('/:email', async (req, res) => {
     const user = await User.findOne({"email": req.params.email})
 
+    res.status(200).send(user)
+})
+
+router.get('/id/:id', async (req, res) => {
+    const user = await User.findOne({_id : req.params.id})
+    
     res.status(200).send(user)
 })
 
