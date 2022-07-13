@@ -12,8 +12,6 @@ router.get('/nearby', async (req, res) => {
         return kms/6371;
     }
 
-    console.log(req.query)
-
     const restaurants = await User.find({role: "seller", "loc": {
         $geoWithin: {
             $centerSphere:[

@@ -40,7 +40,7 @@ function Menu(){
 
 
     async function GetMenu(){
-        const joe = await axios.get('/api/seller/menu', {
+        await axios.get('/api/seller/menu', {
             params: {
                 user_email: user_email
             }

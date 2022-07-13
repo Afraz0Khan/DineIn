@@ -72,7 +72,7 @@ function CheckIns(){
     function Person(props){
 
         async function CheckIn(){
-            const check = await axios.post(`/api/seller/checkIn/${props.email}`, {
+            await axios.post(`/api/seller/checkIn/${props.email}`, {
                 resEmail: userEmail
             })
             .then((res) => {
