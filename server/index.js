@@ -7,7 +7,7 @@ const customer = require('./routes/customer');
 const bodyParser = require('body-parser');
 const app = express();
 
-const db = require('./config/keys').mongoURI;
+const db = require('./config/key').mongoURI;
 
 app.use(cors());
 app.use(express.json());
