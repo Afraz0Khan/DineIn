@@ -34,7 +34,7 @@ function MenuFragment(props){
     const [inAddItem, setInAddItem] = useState(false)
 
     async function DeleteCategory(){
-        const mama = await axios.post(`/api/seller/menu/${email}/deleteCategory/${category}`)
+        await axios.post(`/api/seller/menu/${email}/deleteCategory/${category}`)
             .then((e) => {
                 console.log(e)
             })
@@ -67,7 +67,7 @@ function MenuFragment(props){
 
 
         async function AddItem(){
-            const joe = await axios.post(`/api/seller/menu/${email}/AddItem/${category}`, item)
+            await axios.post(`/api/seller/menu/${email}/AddItem/${category}`, item)
             .then(() => {
                 console.log("request sent successfully")
             })

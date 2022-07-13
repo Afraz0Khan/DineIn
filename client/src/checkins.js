@@ -50,7 +50,7 @@ function CheckIns(){
 
 
     async function UserData(user_email){
-        const user_data = await axios.get(`/api/users/${user_email}`)
+        await axios.get(`/api/users/${user_email}`)
             .then((res) => {
                 const info = res.data.reservations
                 setDineIns([])
