@@ -12,7 +12,7 @@ function SellerCard(props){
     // 4. Restaurant pic (not for now)
 
     // Displays:
-    // 1. Reserve button
+    // 1. Reserve button 
     // 2. Dine in button
 
     const [willReserve, setWillReserve] = useState(false);
@@ -24,7 +24,7 @@ function SellerCard(props){
         const user = jwtDecode(token)
         const date = new window.Date();
         const reservationDate = date.toString()
-        const reservationPost = await axios.post('/api/seller/reserve', {
+        const reservationPost = await axios.post(`/api/seller/reserve/${props.customer_email}`, {
             resId: props.resId,
             time: reservationDate,
             email: user.email

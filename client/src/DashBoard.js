@@ -15,6 +15,7 @@ function DashBoard(){
 
     const [pageReady, setPageReady] = useState(false)
     const [userDataReady, setUserDataReady] = useState(false)
+    const [customerEmail, setCustomerEmail] = useState('')
 
     const [userDbLocation, setUserDbLocation] = useState([]);
     const [userLocation, setUserLocation] = useState(React.createRef());
@@ -41,6 +42,7 @@ function DashBoard(){
                 localStorage.removeItem('token')
                 navigate('/login')
             } else {
+                setCustomerEmail(user.email)
                 setPageReady(true)
             }
         } else {
@@ -71,6 +73,7 @@ function DashBoard(){
                                     heading={element.resName}
                                     address={element.resAddress}
                                     resId={element._id}
+                                    customer_email={customerEmail}
                                 />
                             ])
                         }

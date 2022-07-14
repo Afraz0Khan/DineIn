@@ -70,8 +70,9 @@ router.post('/menu/:email/:action/:target', async (req, res) => {
 })
 
 
-router.post('/reserve', async (req, res) => {
+router.post('/reserve/:customerEmail', async (req, res) => {
     const resId = req.body.resId
+    const customer_email = req.params.customerEmail
     const reservation = {
         email: req.body.email,
         time: req.body.time
@@ -79,8 +80,13 @@ router.post('/reserve', async (req, res) => {
     console.log(resId, reservation)
 
     const restaurant = await Seller.updateOne({_id: resId}, {$push: {"reservations": reservation}})
-
-    res.send(restaurant).status(200)
+    const user = await User.updateOne({email: customer_email}, {$set: {
+        dineStatus: {
+            status: 'pending',
+            restaurantId: resId
+        }
+    }})
+    res.send(user).status(200)
     
 })
 
