@@ -3,6 +3,7 @@ import PlacesAutocomplete, {
   geocodeByAddress,
   getLatLng,
 } from 'react-places-autocomplete';
+import Form from 'react-bootstrap/Form';
  
 class LocationSearchInput extends React.Component {
   constructor(props) {
@@ -35,7 +36,7 @@ class LocationSearchInput extends React.Component {
       >
         {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
           <div>
-            <input
+            <Form.Control
               {...getInputProps({
                 placeholder: 'Search Places ...',
                 className: 'location-search-input',

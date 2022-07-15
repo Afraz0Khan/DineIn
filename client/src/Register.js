@@ -1,10 +1,10 @@
-import logo from './logo.svg';
 import './App.css';
-import React, { Component, useEffect } from 'react';
+import React from 'react';
 import { useState } from 'react';
 import axios from 'axios';
 import LocationSearchInput from './placeComplete';
-
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
 
 
 function Register() {
@@ -58,13 +58,14 @@ function Register() {
     if (role === 'seller'){
       return(
         <div>
-          <h4>Restaurant Name:</h4> <br />
-          <input type='text' 
+          <Form.Label>Restaurant Name</Form.Label>
+          <Form.Control type='text' 
             placeholder='Restaurant Name'
             value={resName}
             onChange={(e) => setResName(e.target.value)}
           />
           <br />
+          <Form.Label>Restaurant address</Form.Label>
           <LocationSearchInput ref={resAddress} />
         </div>
       );
@@ -73,50 +74,77 @@ function Register() {
 
   return (
     <div>
-      <form onSubmit={registerUser}>
-        <input type="name" placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+      <Form onSubmit={registerUser}>
+        <Form.Group className="mb-3" controlId="formBasicEmail">
+            <Form.Label>Name</Form.Label>
+            <Form.Control type="name" placeholder="Name" 
+              value={name} 
+              onChange={(e) => setName(e.target.value)} 
+            />
+            {/* <input type="name" placeholder="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            /> */}
 
-        <br />
+            <br />
+            <Form.Label>Email address</Form.Label>
+            <Form.Control type="email" placeholder="Enter your email" 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+            />
+            {/* <input type="email" placeholder="Email" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            /> */}
+            <br />
 
-        <input type="email" placeholder="Email" 
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <br />
+            <Form.Label>Password</Form.Label>
+            <Form.Control type="password" placeholder='Enter Password'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)} 
+            />
+            {/* <input type="password" placeholder="Password" 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            /> */}
+            <br />
+            
+            <Form.Label>Account type</Form.Label>
+            <Form.Check type='radio' value='customer'
+              label='Customer'
+              checked={role === 'customer'}
+              onChange={(e) => {
+                setRole(e.target.value)
+              }}
+            />
+            {/* <input type='radio' value='customer' 
+              checked={role === 'customer'}
+              onChange={(e) => {
+                setRole(e.target.value)
+              }}
+            /> */}
 
+            <Form.Check type='radio' value='seller'
+              label='Seller'
+              checked={role === 'seller'}
+              onChange={(e) => {
+                setRole(e.target.value)
+              }}
+            />
+            {/* <input type='radio' value='seller' 
+              checked={role === 'seller'}
+              onChange={(e) => {
+                setRole(e.target.value)
+              }}
+            /> */}
+            
+            <br />
 
-        <input type="password" placeholder="Password" 
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <br />
+            {registerRestaurant()}
 
-
-        <input type='radio' value='customer' 
-          checked={role === 'customer'}
-          onChange={(e) => {
-            setRole(e.target.value)
-          }}
-        />
-        customer
-        <br />
-
-        <input type='radio' value='seller' 
-          checked={role === 'seller'}
-          onChange={(e) => {
-            setRole(e.target.value)
-          }}
-        />
-        seller
-        <br />
-
-        {registerRestaurant()}
-
-        <input type='submit' value='Register' />
-      </form>
+            <Button type='submit'>Register</Button>
+        </Form.Group>
+      </Form>
     </div>
   );
 }
