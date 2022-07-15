@@ -1,9 +1,10 @@
 import './App.css';
-import React, { Component } from 'react';
+import React from 'react';
 import { useState } from 'react';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
-
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 
 function Login() {
 
@@ -41,24 +42,25 @@ function Login() {
 
   return (
     <div>
-      <form onSubmit={registerUser}>
+      <Form onSubmit={registerUser}>
+        <Form.Group className='mb-3' controlId='formBasicEmail'>
+          <Form.Label>Enter your email</Form.Label>
+          <Form.Control type="email" placeholder="Email" 
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </Form.Group>
+        <Form.Group className='mb-3' controlId='formBasicPassword'>
+        <Form.Label>Enter Password</Form.Label>
+          <Form.Control type="password" placeholder="Password" 
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </Form.Group>
 
-        <input type="email" placeholder="Email" 
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <br />
+        <Button type='submit' value='Login'>Login</Button>
 
-
-        <input type="password" placeholder="Password" 
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <br />
-
-        <input type='submit' value='Login' />
-
-      </form>
+      </Form>
     </div>
   );
 }
