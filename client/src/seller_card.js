@@ -2,7 +2,8 @@ import axios from 'axios';
 import React, { Component, useState } from 'react';
 import DateTimePicker from 'react-datetime-picker';
 import jwtDecode from 'jwt-decode';
-
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
 
 function SellerCard(props){
     // takes in:
@@ -35,18 +36,14 @@ function SellerCard(props){
 
 
     return(
-        <div style={{marginLeft: '10px'}}>
-            <h4>{props.heading}</h4>  
-            <br />
-            <div style={{display: 'flex'}}>
-                <div style={{marginLeft: '20px', display: 'flex'}}>
-                    <p>{props.address}</p>
-                    {/* <p>{props.rating}</p> */}
-                    <button onClick={OnDineIn}>Dine In</button>
-                    <button>Reserve</button>
-                </div>
-            </div>
-        </div>
+        <Card>
+            <Card.Body>
+                <Card.Title>{props.heading}</Card.Title>
+                <Card.Text>{props.address}</Card.Text>
+                <Button variant='primary' onClick={OnDineIn}>Dine In</Button>
+                <Button variant='primary'>Reserve</Button>
+            </Card.Body>
+        </Card>
     );
 }
 

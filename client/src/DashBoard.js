@@ -4,14 +4,15 @@ import jwtDecode from 'jwt-decode';
 import LocationSearchInput from './placeComplete';
 import axios from 'axios';
 import SellerCard from './seller_card';
-
-
-
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import CardGroup from 'react-bootstrap/CardGroup';
+import Slider from "react-slick";
+import Form from 'react-bootstrap/Form';
 
 // idea: maybe use react bootstrap to create a carousel of restaurant cards ordered by 
 // different properties like "near you" or "popular" etc.
 function DashBoard(){
-
 
     const [pageReady, setPageReady] = useState(false)
     const [userDataReady, setUserDataReady] = useState(false)
@@ -129,22 +130,46 @@ function DashBoard(){
             console.log(res)
         })
     }
+    
 
     function GetUserLocation(){
 
+        const [allAddresses, setAllAddresses] = useState([]);
+        const [addressUpdated, setAddressUpdated] = useState(false);
+
+        async function Addresses(){
+            const data = await axios.get(`/api/users/${customerEmail}`)
+                .then((res) => {
+                    setAllAddresses(res.data.addresses)
+                    setAddressUpdated(true)
+                })
+        }
+
+        useEffect(() => {
+            Addresses()
+        }, [addressUpdated])
+
         if (inLocation){
-            return(
-                <div>
-                    <form onSubmit={(e) => {
-                        e.preventDefault()
-                        OnLocationSubmit()
-                        setInLocation(false)
-                    }}>
-                        <LocationSearchInput ref={userLocation} />
-                        <input type='submit' value='set' />
-                    </form>
-                </div>
-            );
+            
+            if (addressUpdated){
+                return(
+                    <div>
+                        <form onSubmit={(e) => {
+                            e.preventDefault()
+                            OnLocationSubmit()
+                            setInLocation(false)
+                        }}>
+                            <LocationSearchInput ref={userLocation} />
+                            <br />
+                            <h5>Or Choose from saved addresses</h5>
+                            <br />
+
+                            <Button type='submit'>Set</Button>
+                        </form>
+                        
+                    </div>
+                );
+            }
         }
     }
 
@@ -174,11 +199,15 @@ function DashBoard(){
   
         return(
             <div>
-                <h6>{resName}</h6>
-                <br />
-                <h6>{dineStatus}</h6>
-                <br />
-                <h6>{resAddress}</h6>
+                <Card>
+                    <Card.Header as='h5'>{dineStatus}</Card.Header>
+                    <Card.Body>
+                        <Card.Title>{resName}</Card.Title>
+                        <Card.Text>
+                            {resAddress}
+                        </Card.Text>
+                    </Card.Body>
+                </Card>
             </div>
         );
     }
@@ -193,7 +222,7 @@ function DashBoard(){
             </h4>
             <br />
             <h5>{userDbLocation[0]}</h5>
-            <button onClick={() => setInLocation(true)}>Change Location</button>
+            <Button onClick={() => setInLocation(true)}>Change Location</Button>
             <GetUserLocation />
             
             <h1>
@@ -201,15 +230,19 @@ function DashBoard(){
             </h1>
             <DineInNotif />
             <br />
-            <button onClick={() => {
+            <Button onClick={() => {
                 navigate('/dashboard/reserve')
-            }}>Reservations</button>
+            }}>Reservations</Button>
             <h2>Let's Dine-in!</h2>
             <br />
             <h4>Showing restaurants near you:</h4><br />
-            {nearby} 
+            <div>
+                <CardGroup>
+                    {nearby}
+                </CardGroup>
+            </div>
             <br />
-            <input type='button' value="Logout" onClick={LogOut} />
+            <Button variant='danger' onClick={LogOut}>Logout</Button>
         </div>
     );
 }
