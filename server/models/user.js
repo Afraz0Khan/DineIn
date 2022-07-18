@@ -26,6 +26,9 @@ const User = new mongoose.Schema({
         //      restaurantId: 'xyzabc123456'
         // }
     },
+    reservations: {
+        type: Array
+    },
     role:{
         type: String,
         required: true
