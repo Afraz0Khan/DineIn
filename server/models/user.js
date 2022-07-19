@@ -27,7 +27,8 @@ const User = new mongoose.Schema({
         // }
     },
     reservations: {
-        type: Array
+        type: Array,
+        required: false
     },
     role:{
         type: String,

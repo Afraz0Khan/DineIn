@@ -34,6 +34,10 @@ const Seller = new mongoose.Schema({
     reservations:{
         type: Array,
         required: false
+    },
+    dineIns: {
+        type: Array,
+        required: false
     }
 },
 {collection: "user-data"})

@@ -39,10 +39,15 @@ function SellerCard(props){
     async function OnDineIn(){
         const token = localStorage.getItem('token')
         const user = jwtDecode(token)
+        const type = 'reservation'
+        if (!willReserve){
+            const type = 'dineIn'
+        }
         const reservationPost = await axios.post(`/api/seller/reserve/${props.customer_email}`, {
             resId: props.resId,
             time: reservation.toString(),
-            email: user.email
+            email: user.email,
+            type: type
         }).then((res) => {
             console.log(res)
             setWillReserve(false)

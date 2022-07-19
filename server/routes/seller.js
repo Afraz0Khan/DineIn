@@ -80,13 +80,21 @@ router.post('/reserve/:customerEmail', async (req, res) => {
     console.log(resId, reservation)
 
     const restaurant = await Seller.updateOne({_id: resId}, {$push: {"reservations": reservation}})
-    const user = await User.updateOne({email: customer_email}, {$set: {
-        dineStatus: {
-            status: 'pending',
-            restaurantId: resId
-        }
-    }})
-    res.send(user).status(200)
+    if (req.body.type === 'dineIn'){
+        const user = await User.updateOne({email: customer_email}, {$set: {
+            dineStatus: {
+                status: 'pending',
+                restaurantId: resId
+            }
+        }})
+        res.send(user).status(200)
+    } else if (req.body.type === 'reservation'){
+        const user = await User.updateOne({email: customer_email}, {$push: {
+            reservations: reservation
+        }})
+        res.send(user).status(200)
+    }
+    
     
 })
 
