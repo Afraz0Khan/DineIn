@@ -18,10 +18,11 @@ function DashBoard(){
     const [userDataReady, setUserDataReady] = useState(false)
     const [customerEmail, setCustomerEmail] = useState('')
 
-    const [userDbLocation, setUserDbLocation] = useState([]);
+    const [userDbLocations, setUserDbLocations] = useState([]);
     const [userLocation, setUserLocation] = useState(React.createRef());
     const [inLocation, setInLocation] = useState(false);
     const [nearby, setNearby] = useState([]);
+    const [currentLocation, setCurrentLocation] = useState({});
 
     const [dineRes, setDineRes] = useState('');
     const [dineStatus, setDineStatus] = useState('');
@@ -61,8 +62,8 @@ function DashBoard(){
                     console.log('in data ready')
                     const locations = await axios.get(`/api/customer/nearby`, {
                         params: {
-                            longitude: userDbLocation[1].lng,
-                            latitude: userDbLocation[1].lat
+                            longitude: userDbLocations[1].lng,
+                            latitude: userDbLocations[1].lat
                         }
                     })
                     .then((res) => {
@@ -91,15 +92,9 @@ function DashBoard(){
         console.log('email extracted')
         const joe = await axios.get(`/api/users/${user_email}`)
             .then((res) => {
-
-                if (res.data.addresses.length !== 0){
-                    setUserDbLocation(prevArr => [...prevArr,
-                        res.data.addresses[0].address
-                    ])
-
-                    setUserDbLocation(prevArr => [...prevArr,
-                        res.data.addresses[0].coords
-                    ])
+                const addresses = res.data
+                
+                    setUserDbLocations(addresses.addresses)
 
                     const status = res.data.dineStatus
                     
@@ -109,7 +104,7 @@ function DashBoard(){
                     }
                     
                     setUserDataReady(true)
-                }
+                
                 
             })
     }
@@ -134,25 +129,23 @@ function DashBoard(){
 
     function GetUserLocation(customer_email = customerEmail){
 
-        const [allAddresses, setAllAddresses] = useState([]);
-        const [addressUpdated, setAddressUpdated] = useState(false);
-
-
+        const [locationElements, setLocationElements] = useState([]);
+        const [checkedLocation, setCheckedLocation] = useState('')
         useEffect(() => {
-            async function Addresses(){
-                console.log(customer_email)
-                const data = await axios.get(`/api/users/${customer_email}`)
-                    .then((res) => {
-                        console.log(res.data.addresses)
-                        setAllAddresses(res.data.addresses)
-                        setAddressUpdated(true)
-                        console.log(inLocation, addressUpdated)
-                    })
-            }
-            Addresses()
-        }, [addressUpdated])
+            userDbLocations.forEach(address => {
+                setLocationElements(arr => [...arr, (
+                    <Form.Check type='radio' value={address.address}
+                        label={address.address}
+                        checked={checkedLocation===address.address}
+                        onChange={(e) => {
+                            setCheckedLocation(e.target.value)
+                        }}
+                    />
+                )])
+            })
+        }, [userDbLocations])
 
-        if (inLocation && addressUpdated){
+        if (inLocation){
             console.log('in :sung')
             return(
                 <div>
@@ -168,6 +161,11 @@ function DashBoard(){
 
                         <Button type='submit'>Set</Button>
                     </form>
+                    <Form>
+                        <Form.Group className='mb-3' constrolId='formBasicAddress'>
+                            <Form.Label>Select from previous addresses:</Form.Label>
+                        </Form.Group>
+                    </Form>
                     
                 </div>
             );
@@ -223,7 +221,7 @@ function DashBoard(){
                 Your Location:
             </h4>
             <br />
-            <h5>{userDbLocation[0]}</h5>
+            <h5>{userDbLocations[0]}</h5>
             <Button onClick={() => setInLocation(true)}>Change Location</Button>
             <GetUserLocation />
             
