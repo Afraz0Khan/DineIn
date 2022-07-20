@@ -132,44 +132,46 @@ function DashBoard(){
     }
     
 
-    function GetUserLocation(){
+    function GetUserLocation(customer_email = customerEmail){
 
         const [allAddresses, setAllAddresses] = useState([]);
         const [addressUpdated, setAddressUpdated] = useState(false);
 
-        async function Addresses(){
-            const data = await axios.get(`/api/users/${customerEmail}`)
-                .then((res) => {
-                    setAllAddresses(res.data.addresses)
-                    setAddressUpdated(true)
-                })
-        }
 
         useEffect(() => {
+            async function Addresses(){
+                console.log(customer_email)
+                const data = await axios.get(`/api/users/${customer_email}`)
+                    .then((res) => {
+                        console.log(res.data.addresses)
+                        setAllAddresses(res.data.addresses)
+                        setAddressUpdated(true)
+                        console.log(inLocation, addressUpdated)
+                    })
+            }
             Addresses()
         }, [addressUpdated])
 
-        if (inLocation){
-            
-            if (addressUpdated){
-                return(
-                    <div>
-                        <form onSubmit={(e) => {
-                            e.preventDefault()
-                            OnLocationSubmit()
-                            setInLocation(false)
-                        }}>
-                            <LocationSearchInput ref={userLocation} />
-                            <br />
-                            <h5>Or Choose from saved addresses</h5>
-                            <br />
+        if (inLocation && addressUpdated){
+            console.log('in :sung')
+            return(
+                <div>
+                    <form onSubmit={(e) => {
+                        e.preventDefault()
+                        OnLocationSubmit()
+                        setInLocation(false)
+                    }}>
+                        <LocationSearchInput ref={userLocation} />
+                        <br />
+                        <h5>Or Choose from saved addresses</h5>
+                        <br />
 
-                            <Button type='submit'>Set</Button>
-                        </form>
-                        
-                    </div>
-                );
-            }
+                        <Button type='submit'>Set</Button>
+                    </form>
+                    
+                </div>
+            );
+        
         }
     }
 

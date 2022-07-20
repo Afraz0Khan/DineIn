@@ -85,26 +85,37 @@ router.post('/login', async (req, res) => {
 })
 
 router.post('/register/address/:email', async (req, res) => {
-    const address_obj = req.body.address
-    
-    console.log(address_obj)
-    const momo = await User.updateOne({email: req.params.email}, {$push: {"addresses": address_obj}})
+    try{
+        const address_obj = req.body.address
+        console.log(address_obj)
+        await User.updateOne({email: req.params.email}, {$push: {"addresses": address_obj}})
         .then(() => {
             res.status(200).send('addresses updated')
         })
+    } catch (err){
+        console.log(err)
+    }
+    
 })
 
 
 router.get('/:email', async (req, res) => {
-    const user = await User.findOne({"email": req.params.email})
+    try{
+        const user = await User.findOne({email: req.params.email})
+        res.status(200).send(user)
+    } catch (err){
+        console.log(err)
+    }
 
-    res.status(200).send(user)
 })
 
 router.get('/id/:id', async (req, res) => {
-    const user = await User.findOne({_id : req.params.id})
-    
-    res.status(200).send(user)
+    try{
+        const user = await User.findOne({_id : req.params.id})
+        res.status(200).send(user)
+    } catch (err) {
+        console.log(err)
+    }
 })
 
 
