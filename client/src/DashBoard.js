@@ -20,6 +20,7 @@ function DashBoard(){
 
     const [userDbLocations, setUserDbLocations] = useState([]);
     const [userLocation, setUserLocation] = useState(React.createRef());
+    
     const [inLocation, setInLocation] = useState(false);
     const [nearby, setNearby] = useState([]);
     const [currentLocation, setCurrentLocation] = useState({});
@@ -130,8 +131,13 @@ function DashBoard(){
     function GetUserLocation(customer_email = customerEmail){
 
         const [locationElements, setLocationElements] = useState([]);
-        const [checkedLocation, setCheckedLocation] = useState('')
+        const [checkedLocation, setCheckedLocation] = useState('');
+        const [newAddress, setNewAddress] = useState('');
+        const [userLocation, setUserLocation] = useState(React.createRef());
+
         useEffect(() => {
+            setLocationElements([])
+            console.log(userDbLocations)
             userDbLocations.forEach(address => {
                 setLocationElements(arr => [...arr, (
                     <Form.Check type='radio' value={address.address}
@@ -142,14 +148,31 @@ function DashBoard(){
                         }}
                     />
                 )])
+                console.log(address)
+                
             })
         }, [userDbLocations])
 
+        async function AfterLocationSetOrSubmit(){
+            if (!checkedLocation){
+                console.log('sup')
+                await axios.post(`/api/users/register/address/${customerEmail}`, {
+                    address: {
+                        address: userLocation.current.state.address,
+                        coords: {
+                            lat: userLocation.current.state.coords.lat,
+                            lng: userLocation.current.state.coords.lng
+                        }
+                    }
+                })
+            }
+        }
+
         if (inLocation){
-            console.log('in :sung')
+            
             return(
                 <div>
-                    <form onSubmit={(e) => {
+                    {/* <form onSubmit={(e) => {
                         e.preventDefault()
                         OnLocationSubmit()
                         setInLocation(false)
@@ -160,11 +183,21 @@ function DashBoard(){
                         <br />
 
                         <Button type='submit'>Set</Button>
-                    </form>
-                    <Form>
+                    </form> */}
+                    <Form onSubmit={(e) => {
+                        e.preventDefault()
+                        AfterLocationSetOrSubmit()
+                        setInLocation(false)
+                    }}>
+                        <Form.Group className='mb-3' controlId='formBasicLocation'>
+                            <Form.Label>Add a new address</Form.Label>
+                            <LocationSearchInput ref={userLocation} />
+                        </Form.Group>
                         <Form.Group className='mb-3' constrolId='formBasicAddress'>
                             <Form.Label>Select from previous addresses:</Form.Label>
+                            {locationElements}
                         </Form.Group>
+                        <Button type='submit'>Set</Button>
                     </Form>
                     
                 </div>
@@ -173,44 +206,44 @@ function DashBoard(){
         }
     }
 
-    function DineInNotif(){
+    // function DineInNotif(){
 
-        const [resName, setResName] = useState('');
-        const [resAddress, setResAddress] = useState('');
+    //     const [resName, setResName] = useState('');
+    //     const [resAddress, setResAddress] = useState('');
 
 
-        useEffect(() => {
-            if (dineRes !== ''){
-                async function DineInInfo(){
-                    console.log(dineRes)
-                    const url = `/api/users/id/${dineRes}`
-                    const data = await axios.get(url)
-                    .then((res) => {
-                        const user = res.data
-                        setResAddress(user.resAddress)
-                        setResName(user.resName)
-                    })
-                }
+    //     useEffect(() => {
+    //         if (dineRes !== ''){
+    //             async function DineInInfo(){
+    //                 console.log(dineRes)
+    //                 const url = `/api/users/id/${dineRes}`
+    //                 const data = await axios.get(url)
+    //                 .then((res) => {
+    //                     const user = res.data
+    //                     setResAddress(user.resAddress)
+    //                     setResName(user.resName)
+    //                 })
+    //             }
 
-                DineInInfo()
+    //             DineInInfo()
                 
-            }
-        }, [dineRes])
+    //         }
+    //     }, [dineRes])
   
-        return(
-            <div>
-                <Card>
-                    <Card.Header as='h5'>{dineStatus}</Card.Header>
-                    <Card.Body>
-                        <Card.Title>{resName}</Card.Title>
-                        <Card.Text>
-                            {resAddress}
-                        </Card.Text>
-                    </Card.Body>
-                </Card>
-            </div>
-        );
-    }
+    //     return(
+    //         <div>
+    //             <Card>
+    //                 <Card.Header as='h5'>{dineStatus}</Card.Header>
+    //                 <Card.Body>
+    //                     <Card.Title>{resName}</Card.Title>
+    //                     <Card.Text>
+    //                         {resAddress}
+    //                     </Card.Text>
+    //                 </Card.Body>
+    //             </Card>
+    //         </div>
+    //     );
+    // }
 
 
     // add routes for reservation, Dine in (for no reservation), Chat, Grocery (later), Budget
@@ -221,14 +254,14 @@ function DashBoard(){
                 Your Location:
             </h4>
             <br />
-            <h5>{userDbLocations[0]}</h5>
+            {/* <h5>{userDbLocations[0]}</h5> */}
             <Button onClick={() => setInLocation(true)}>Change Location</Button>
             <GetUserLocation />
             
             <h1>
                 hi customer
             </h1>
-            <DineInNotif />
+            {/* <DineInNotif /> */}
             <br />
             <Button onClick={() => {
                 navigate('/dashboard/reserve')
