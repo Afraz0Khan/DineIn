@@ -7,7 +7,6 @@ import SellerCard from './seller_card';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import CardGroup from 'react-bootstrap/CardGroup';
-import Slider from "react-slick";
 import Form from 'react-bootstrap/Form';
 
 // idea: maybe use react bootstrap to create a carousel of restaurant cards ordered by 
@@ -19,23 +18,15 @@ function DashBoard(){
     const [customerEmail, setCustomerEmail] = useState('')
 
     const [userDbLocations, setUserDbLocations] = useState([]);
-    const [userLocation, setUserLocation] = useState(React.createRef());
+    const [currentUserLocation, setCurrentUserLocation] = useState({});
     
     const [inLocation, setInLocation] = useState(false);
     const [nearby, setNearby] = useState([]);
-    const [currentLocation, setCurrentLocation] = useState({});
-
-    const [dineRes, setDineRes] = useState('');
-    const [dineStatus, setDineStatus] = useState('');
+    
 
     const navigate = useNavigate()
 
     useEffect(() => {
-
-        // setPageReady(false)
-        // setUserDataReady(false)
-        // setUserDbLocation([])
-        
 
         const token = localStorage.getItem('token')
         
@@ -55,77 +46,12 @@ function DashBoard(){
     }, [])
 
 
-    useEffect(() => {
-        if (pageReady){
-            GetUserData()
-            .then(async () => {
-                if (userDataReady){
-                    console.log('in data ready')
-                    const locations = await axios.get(`/api/customer/nearby`, {
-                        params: {
-                            longitude: userDbLocations[1].lng,
-                            latitude: userDbLocations[1].lat
-                        }
-                    })
-                    .then((res) => {
-                        setNearby([])
-                        for(let i = 0; i<res.data.length; i++){
-                            const element = res.data[i];
-                            setNearby(arr => [
-                                ...arr, <SellerCard
-                                    heading={element.resName}
-                                    address={element.resAddress}
-                                    resId={element._id}
-                                    customer_email={customerEmail}
-                                />
-                            ])
-                        }
-                    })
-            }})
-        }
-    }, [pageReady, userDataReady])
-
-
-
-    async function GetUserData(){
-        const jj = jwtDecode(localStorage.getItem('token'))
-        const user_email = jj.email
-        console.log('email extracted')
-        const joe = await axios.get(`/api/users/${user_email}`)
-            .then((res) => {
-                const addresses = res.data
-                
-                    setUserDbLocations(addresses.addresses)
-
-                    const status = res.data.dineStatus
-                    
-                    if (status.status !== ''){
-                        setDineRes(status.restaurantId)
-                        setDineStatus(status.status)
-                    }
-                    
-                    setUserDataReady(true)
-                
-                
-            })
-    }
-
 
     function LogOut(){
         localStorage.removeItem('token')
         navigate('/login')
     }
 
-    async function OnLocationSubmit(){
-        const email = jwtDecode(localStorage.getItem('token')).email
-        console.log(email)
-        console.log(userLocation)
-        const sent = await axios.post(`api/users/register/address/${email}`, {
-            address: userLocation.current.state
-        }).then((res) => {
-            console.log(res)
-        })
-    }
     
 
     function GetUserLocation(customer_email = customerEmail){
@@ -135,27 +61,41 @@ function DashBoard(){
         const [newAddress, setNewAddress] = useState('');
         const [userLocation, setUserLocation] = useState(React.createRef());
 
+        async function AllLocations(){
+            await axios.get(`/api/users/${customerEmail}`)
+            .then((res) => {
+
+            })
+        }
+
         useEffect(() => {
             setLocationElements([])
             console.log(userDbLocations)
             userDbLocations.forEach(address => {
+                const value = address.address
                 setLocationElements(arr => [...arr, (
-                    <Form.Check type='radio' value={address.address}
+                    <Form.Check type='radio' 
+                        value={address.address}
                         label={address.address}
                         checked={checkedLocation===address.address}
                         onChange={(e) => {
                             setCheckedLocation(e.target.value)
+                            console.log('tatti')
                         }}
                     />
                 )])
-                console.log(address)
+                if (locationElements.length == 1){
+                    setCheckedLocation(value)
+                    setCurrentUserLocation(address.coords)
+                }
                 
             })
+            
         }, [userDbLocations])
 
         async function AfterLocationSetOrSubmit(){
             if (!checkedLocation){
-                console.log('sup')
+                
                 await axios.post(`/api/users/register/address/${customerEmail}`, {
                     address: {
                         address: userLocation.current.state.address,
@@ -172,18 +112,6 @@ function DashBoard(){
             
             return(
                 <div>
-                    {/* <form onSubmit={(e) => {
-                        e.preventDefault()
-                        OnLocationSubmit()
-                        setInLocation(false)
-                    }}>
-                        <LocationSearchInput ref={userLocation} />
-                        <br />
-                        <h5>Or Choose from saved addresses</h5>
-                        <br />
-
-                        <Button type='submit'>Set</Button>
-                    </form> */}
                     <Form onSubmit={(e) => {
                         e.preventDefault()
                         AfterLocationSetOrSubmit()
@@ -195,7 +123,7 @@ function DashBoard(){
                         </Form.Group>
                         <Form.Group className='mb-3' constrolId='formBasicAddress'>
                             <Form.Label>Select from previous addresses:</Form.Label>
-                            {locationElements}
+                                {locationElements}
                         </Form.Group>
                         <Button type='submit'>Set</Button>
                     </Form>
