@@ -13,19 +13,15 @@ import Form from 'react-bootstrap/Form';
 // different properties like "near you" or "popular" etc.
 function DashBoard(){
 
-    const [pageReady, setPageReady] = useState(false)
-    const [userDataReady, setUserDataReady] = useState(false)
     const [customerEmail, setCustomerEmail] = useState('')
-
-    const [userDbLocations, setUserDbLocations] = useState([]);
     const [currentUserLocation, setCurrentUserLocation] = useState({});
     
     const [inLocation, setInLocation] = useState(false);
     const [nearby, setNearby] = useState([]);
     
 
-    const navigate = useNavigate()
 
+    const navigate = useNavigate()
     useEffect(() => {
 
         const token = localStorage.getItem('token')
@@ -37,7 +33,7 @@ function DashBoard(){
                 navigate('/login')
             } else {
                 setCustomerEmail(user.email)
-                setPageReady(true)
+                // setPageReady(true)
             }
         } else {
             navigate('/login')
@@ -46,33 +42,32 @@ function DashBoard(){
     }, [])
 
 
-
-    function LogOut(){
-        localStorage.removeItem('token')
-        navigate('/login')
-    }
-
     
-
-    function GetUserLocation(customer_email = customerEmail){
-
+    function GetUserLocation(){
+        
         const [locationElements, setLocationElements] = useState([]);
+        const [allAddresses, setAllAddresses] = useState([]);
         const [checkedLocation, setCheckedLocation] = useState('');
         const [newAddress, setNewAddress] = useState('');
-        const [userLocation, setUserLocation] = useState(React.createRef());
+        const [isAddressSet, setIsAddressSet] = useState(false)
 
-        async function AllLocations(){
+
+        async function getAllAddresses(){
             await axios.get(`/api/users/${customerEmail}`)
             .then((res) => {
-
+                const data = res.data
+                setAllAddresses(data.addresses)
+                setIsAddressSet(true)
             })
         }
 
         useEffect(() => {
-            setLocationElements([])
-            console.log(userDbLocations)
-            userDbLocations.forEach(address => {
-                const value = address.address
+            getAllAddresses()
+        }, [])
+
+
+        useEffect(() => {
+            allAddresses.forEach(address => {
                 setLocationElements(arr => [...arr, (
                     <Form.Check type='radio' 
                         value={address.address}
@@ -80,33 +75,26 @@ function DashBoard(){
                         checked={checkedLocation===address.address}
                         onChange={(e) => {
                             setCheckedLocation(e.target.value)
-                            console.log('tatti')
                         }}
                     />
                 )])
-                if (locationElements.length == 1){
-                    setCheckedLocation(value)
-                    setCurrentUserLocation(address.coords)
-                }
-                
             })
-            
-        }, [userDbLocations])
+        }, [isAddressSet])
 
-        async function AfterLocationSetOrSubmit(){
-            if (!checkedLocation){
+        // async function AfterLocationSetOrSubmit(){
+        //     if (!checkedLocation){
                 
-                await axios.post(`/api/users/register/address/${customerEmail}`, {
-                    address: {
-                        address: userLocation.current.state.address,
-                        coords: {
-                            lat: userLocation.current.state.coords.lat,
-                            lng: userLocation.current.state.coords.lng
-                        }
-                    }
-                })
-            }
-        }
+        //         await axios.post(`/api/users/register/address/${customerEmail}`, {
+        //             address: {
+        //                 address: userLocation.current.state.address,
+        //                 coords: {
+        //                     lat: userLocation.current.state.coords.lat,
+        //                     lng: userLocation.current.state.coords.lng
+        //                 }
+        //             }
+        //         })
+        //     }
+        // }
 
         if (inLocation){
             
@@ -114,12 +102,12 @@ function DashBoard(){
                 <div>
                     <Form onSubmit={(e) => {
                         e.preventDefault()
-                        AfterLocationSetOrSubmit()
+                        // AfterLocationSetOrSubmit()
                         setInLocation(false)
                     }}>
                         <Form.Group className='mb-3' controlId='formBasicLocation'>
                             <Form.Label>Add a new address</Form.Label>
-                            <LocationSearchInput ref={userLocation} />
+                            {/* <LocationSearchInput ref={newAddress} /> */}
                         </Form.Group>
                         <Form.Group className='mb-3' constrolId='formBasicAddress'>
                             <Form.Label>Select from previous addresses:</Form.Label>
@@ -173,6 +161,10 @@ function DashBoard(){
     //     );
     // }
 
+    function LogOut(){
+        localStorage.removeItem('token')
+        navigate('/login')
+    }
 
     // add routes for reservation, Dine in (for no reservation), Chat, Grocery (later), Budget
     // Dine-is is the default route for dashboard
