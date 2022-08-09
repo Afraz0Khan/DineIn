@@ -13,7 +13,7 @@ import Form from 'react-bootstrap/Form';
 // different properties like "near you" or "popular" etc.
 function DashBoard(){
 
-    const [customerEmail, setCustomerEmail] = useState('')
+    const [customerEmail, setCustomerEmail] = useState('');
     const [currentUserLocation, setCurrentUserLocation] = useState({});
     
     const [inLocation, setInLocation] = useState(false);
@@ -23,7 +23,6 @@ function DashBoard(){
 
     const navigate = useNavigate()
     useEffect(() => {
-
         const token = localStorage.getItem('token')
         
         if (token){
@@ -33,7 +32,6 @@ function DashBoard(){
                 navigate('/login')
             } else {
                 setCustomerEmail(user.email)
-                // setPageReady(true)
             }
         } else {
             navigate('/login')
@@ -53,17 +51,19 @@ function DashBoard(){
 
 
         async function getAllAddresses(){
-            await axios.get(`/api/users/${customerEmail}`)
-            .then((res) => {
-                const data = res.data
-                setAllAddresses(data.addresses)
-                setIsAddressSet(true)
-            })
+            if (customerEmail){
+                await axios.get(`/api/users/${customerEmail}`)
+                    .then((res) => {
+                    const data = res.data
+                    setAllAddresses(data.addresses)
+                    setIsAddressSet(true)
+                })
+            }
         }
 
         useEffect(() => {
             getAllAddresses()
-        }, [])
+        }, [customerEmail])
 
 
         useEffect(() => {
@@ -105,11 +105,11 @@ function DashBoard(){
                         // AfterLocationSetOrSubmit()
                         setInLocation(false)
                     }}>
-                        <Form.Group className='mb-3' controlId='formBasicLocation'>
+                        <Form.Group className='mb-3'>
                             <Form.Label>Add a new address</Form.Label>
                             {/* <LocationSearchInput ref={newAddress} /> */}
                         </Form.Group>
-                        <Form.Group className='mb-3' constrolId='formBasicAddress'>
+                        <Form.Group className='mb-3'>
                             <Form.Label>Select from previous addresses:</Form.Label>
                                 {locationElements}
                         </Form.Group>
