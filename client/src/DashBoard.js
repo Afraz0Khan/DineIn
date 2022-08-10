@@ -54,9 +54,20 @@ function DashBoard(){
             if (customerEmail){
                 await axios.get(`/api/users/${customerEmail}`)
                     .then((res) => {
+                    setLocationElements([])
                     const data = res.data
-                    setAllAddresses(data.addresses)
-                    setIsAddressSet(true)
+                    data.addresses.forEach(address => {
+                        setLocationElements(arr => [...arr, (
+                            <Form.Check type='radio'
+                                value={address.address}
+                                label={address.address}
+                                checked={checkedLocation === address.address}
+                                onChange={(e) => {
+                                    setCheckedLocation(e.target.value)
+                                }}
+                            />
+                        )])
+                    })
                 })
             }
         }
@@ -64,22 +75,6 @@ function DashBoard(){
         useEffect(() => {
             getAllAddresses()
         }, [customerEmail])
-
-
-        useEffect(() => {
-            allAddresses.forEach(address => {
-                setLocationElements(arr => [...arr, (
-                    <Form.Check type='radio' 
-                        value={address.address}
-                        label={address.address}
-                        checked={checkedLocation===address.address}
-                        onChange={(e) => {
-                            setCheckedLocation(e.target.value)
-                        }}
-                    />
-                )])
-            })
-        }, [isAddressSet])
 
         // async function AfterLocationSetOrSubmit(){
         //     if (!checkedLocation){

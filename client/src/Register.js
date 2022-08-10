@@ -118,14 +118,12 @@ function Register() {
               setRole(e.target.value)
             }}
           />
+
         </Form.Group>
-
             {registerRestaurant()}
-
             <Button type='submit'>Register</Button>
-
-
       </Form>
+      
     </div>
   );
 }
