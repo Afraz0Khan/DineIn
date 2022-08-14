@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import {useNavigate, useResolvedPath} from 'react-router-dom';
+import React, { createRef, useEffect, useState } from 'react';
+import {useNavigate} from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 import LocationSearchInput from './placeComplete';
 import axios from 'axios';
@@ -14,39 +14,71 @@ import Form from 'react-bootstrap/Form';
 
 
 
-class AddressInput extends Component {
+class AddressInput extends React.Component {
     constructor(props) {
         super(props);
+        this.newAddress = createRef();
         this.state={
             currentCoordinates: {},
             locationElements: [],
             inComponent: false,
             checkedIndex: 0,
-            isAddressSet: false   
+            isAddressSet: false,
+            toUpdate: false
         }
     }
 
-    getAllAddresses(){
-        if (props.email){
-            await axios.get(`/api/users/${props.email}`)
+    componentDidMount(){
+        this.getAllAddresses()
+        console.log('inMount')
+        console.log(this.state.locationElements)
+    }
+
+    componentDidUpdate(){
+        console.log('here')
+        console.log(this.state.toUpdate, this.state.isAddressSet, this.state.locationElements)
+        if (this.state.isAddressSet && this.state.toUpdate){
+            console.log('inside')
+            console.log(this.state.locationElements[this.state.checkedIndex].props.coordinates)
+            this.setState({
+                currentCoordinates: this.state.locationElements[this.state.checkedIndex].props.coordinates
+            })
+            if (this.state.currentCoordinates){
+                console.log(this.state.currentCoordinates)
+                this.setState({toUpdate: false})
+
+            }
+            console.log(this.state.currentCoordinates)
+        }
+
+    }
+
+    async getAllAddresses(){
+        if (this.props.email){
+            await axios.get(`/api/users/${this.props.email}`)
                 .then((res) => {
-                setLocationElements([])
+                this.setState({locationElements: []})
                 const data = res.data.addresses
+                const dummy = []
                 for (let i = 0; i < data.length; i++) {
                     const element = data[i];
-                    this.setState({locationElements: [...this.state.locationElements, (
+                    dummy.push((
                         <Form.Check type='radio'
                             value={i}
                             label={element.address}
                             coordinates={element.coords}
-                            checked={checkedIndex === i}
+                            checked={this.state.checkedIndex === i}
                             onChange={(e) => {
-                                setCheckedIndex(e.target.value)
+                                this.setState({checkedIndex: e.target.value})
                             }}
                         />
-                    )]})
+                    ))
                 }
+                this.setState({locationElements: dummy})
                 this.setState({isAddressSet: true})
+                this.setState({toUpdate: true})
+
+                console.log(this.state.locationElements, this.state.isAddressSet)
             })
         }
     }
@@ -58,11 +90,10 @@ class AddressInput extends Component {
                 <Form onSubmit={(e) => {
                     e.preventDefault()
                     //AfterLocationSetOrSubmit()
-                    setInLocation(false)
                 }}>
                     <Form.Group className='mb-3'>
                         <Form.Label>Add a new address</Form.Label>
-                        <LocationSearchInput ref={newAddress} />
+                        <LocationSearchInput ref={this.newAddress} />
                     </Form.Group>
                     <Form.Group className='mb-3'>
                         <Form.Label>Select from previous addresses:</Form.Label>
@@ -164,93 +195,93 @@ function DashBoard(){
 
 
     
-    function GetUserLocation(){
+    // function GetUserLocation(){
         
-        const [locationElements, setLocationElements] = useState([]);
-        const [checkedLocation, setCheckedLocation] = useState('');
-        const [newAddress, setNewAddress] = useState(React.createRef());
-        const [isAddressSet, setIsAddressSet] = useState(false);
-        const [currentCoordinates, setCurrentCoordinates] = useState({});
+    //     const [locationElements, setLocationElements] = useState([]);
+    //     const [checkedLocation, setCheckedLocation] = useState('');
+    //     const [newAddress, setNewAddress] = useState(React.createRef());
+    //     const [isAddressSet, setIsAddressSet] = useState(false);
+    //     const [currentCoordinates, setCurrentCoordinates] = useState({});
 
 
-        useEffect(() => {
-            getAllAddresses()
-        }, [customerEmail])
+    //     useEffect(() => {
+    //         getAllAddresses()
+    //     }, [customerEmail])
 
 
-        useEffect(() => {
-            if (isAddressSet){
-                const currentCoords = locationElements[0].props.coordinates
-                setCurrentCoordinates(currentCoords)
-            }
-        }, [isAddressSet])
+    //     useEffect(() => {
+    //         if (isAddressSet){
+    //             const currentCoords = locationElements[0].props.coordinates
+    //             setCurrentCoordinates(currentCoords)
+    //         }
+    //     }, [isAddressSet])
 
 
-        async function getAllAddresses(){
-            if (customerEmail){
-                await axios.get(`/api/users/${customerEmail}`)
-                    .then((res) => {
-                    setLocationElements([])
-                    const data = res.data
-                    data.addresses.forEach(address => {
-                        setLocationElements(arr => [...arr, (
-                            <Form.Check type='radio'
-                                value={address.address}
-                                label={address.address}
-                                coordinates={address.coords}
-                                checked={checkedLocation === address.address}
-                                onChange={(e) => {
-                                    setCheckedLocation(e.target.value)
-                                }}
-                            />
-                        )])
-                    })
-                    setIsAddressSet(true)
-                })
+    //     async function getAllAddresses(){
+    //         if (customerEmail){
+    //             await axios.get(`/api/users/${customerEmail}`)
+    //                 .then((res) => {
+    //                 setLocationElements([])
+    //                 const data = res.data
+    //                 data.addresses.forEach(address => {
+    //                     setLocationElements(arr => [...arr, (
+    //                         <Form.Check type='radio'
+    //                             value={address.address}
+    //                             label={address.address}
+    //                             coordinates={address.coords}
+    //                             checked={checkedLocation === address.address}
+    //                             onChange={(e) => {
+    //                                 setCheckedLocation(e.target.value)
+    //                             }}
+    //                         />
+    //                     )])
+    //                 })
+    //                 setIsAddressSet(true)
+    //             })
 
-            }
-        }
+    //         }
+    //     }
 
-        // async function AfterLocationSetOrSubmit(){
-        //     if (!checkedLocation){
+    //     // async function AfterLocationSetOrSubmit(){
+    //     //     if (!checkedLocation){
                 
-        //         await axios.post(`/api/users/register/address/${customerEmail}`, {
-        //             address: {
-        //                 address: userLocation.current.state.address,
-        //                 coords: {
-        //                     lat: userLocation.current.state.coords.lat,
-        //                     lng: userLocation.current.state.coords.lng
-        //                 }
-        //             }
-        //         })
-        //     }
-        // }
+    //     //         await axios.post(`/api/users/register/address/${customerEmail}`, {
+    //     //             address: {
+    //     //                 address: userLocation.current.state.address,
+    //     //                 coords: {
+    //     //                     lat: userLocation.current.state.coords.lat,
+    //     //                     lng: userLocation.current.state.coords.lng
+    //     //                 }
+    //     //             }
+    //     //         })
+    //     //     }
+    //     // }
 
-        if (inLocation){
+    //     if (inLocation){
             
-            return(
-                <div>
-                    <Form onSubmit={(e) => {
-                        e.preventDefault()
-                        //AfterLocationSetOrSubmit()
-                        setInLocation(false)
-                    }}>
-                        <Form.Group className='mb-3'>
-                            <Form.Label>Add a new address</Form.Label>
-                            <LocationSearchInput ref={newAddress} />
-                        </Form.Group>
-                        <Form.Group className='mb-3'>
-                            <Form.Label>Select from previous addresses:</Form.Label>
-                                {locationElements}
-                        </Form.Group>
-                        <Button type='submit'>Set</Button>
-                    </Form>
+    //         return(
+    //             <div>
+    //                 <Form onSubmit={(e) => {
+    //                     e.preventDefault()
+    //                     //AfterLocationSetOrSubmit()
+    //                     setInLocation(false)
+    //                 }}>
+    //                     <Form.Group className='mb-3'>
+    //                         <Form.Label>Add a new address</Form.Label>
+    //                         <LocationSearchInput ref={newAddress} />
+    //                     </Form.Group>
+    //                     <Form.Group className='mb-3'>
+    //                         <Form.Label>Select from previous addresses:</Form.Label>
+    //                             {locationElements}
+    //                     </Form.Group>
+    //                     <Button type='submit'>Set</Button>
+    //                 </Form>
                     
-                </div>
-            );
+    //             </div>
+    //         );
         
-        }
-    }
+    //     }
+    // }
 
     // function DineInNotif(){
 
@@ -306,7 +337,7 @@ function DashBoard(){
             <br />
             {/* <h5>{userDbLocations[0]}</h5> */}
             <Button onClick={() => setInLocation(true)}>Change Location</Button>
-            <GetUserLocation />
+            <AddressInput email={customerEmail}/>
             
             <h1>
                 hi customer
