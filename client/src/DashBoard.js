@@ -30,27 +30,16 @@ class AddressInput extends React.Component {
 
     componentDidMount(){
         this.getAllAddresses()
-        console.log('inMount')
-        console.log(this.state.locationElements)
     }
 
     componentDidUpdate(){
-        console.log('here')
-        console.log(this.state.toUpdate, this.state.isAddressSet, this.state.locationElements)
-        if (this.state.isAddressSet && this.state.toUpdate){
-            console.log('inside')
-            console.log(this.state.locationElements[this.state.checkedIndex].props.coordinates)
+        if (this.state.toUpdate && this.state.locationElements.length!=0){
             this.setState({
-                currentCoordinates: this.state.locationElements[this.state.checkedIndex].props.coordinates
+                currentCoordinates: this.state.locationElements[this.state.checkedIndex].props.coordinates,
+                toUpdate: false,
+                isAddressSet: true
             })
-            if (this.state.currentCoordinates){
-                console.log(this.state.currentCoordinates)
-                this.setState({toUpdate: false})
-
-            }
-            console.log(this.state.currentCoordinates)
         }
-
     }
 
     async getAllAddresses(){
@@ -74,15 +63,13 @@ class AddressInput extends React.Component {
                         />
                     ))
                 }
-                this.setState({locationElements: dummy})
-                this.setState({isAddressSet: true})
-                this.setState({toUpdate: true})
-
-                console.log(this.state.locationElements, this.state.isAddressSet)
+                this.setState({
+                    locationElements: dummy,
+                    toUpdate: true,
+                })
             })
         }
     }
-
 
     render() { 
         return (
@@ -107,73 +94,17 @@ class AddressInput extends React.Component {
 }
 
 
-// function AddressInput(){
-//     const [currentCoordinates, setCurrentCoordinates] = useState({});
-//     const [locationElements, setLocationElements] = useState([]);
-//     const [inComponent, setInComponent] = useState(false);
-//     const [checkedIndex, setCheckedIndex] = useState(0);
-//     const [isAddressSet, setIsAddressSet] = useState(false);
-
-
-//     async function getAllAddresses(){
-//         if (props.email){
-//             await axios.get(`/api/users/${props.email}`)
-//                 .then((res) => {
-//                 setLocationElements([])
-//                 const data = res.data.addresses
-//                 for (let i = 0; i < data.length; i++) {
-//                     const element = data[i];
-//                     setLocationElements(arr => [...arr, (
-//                         <Form.Check type='radio'
-//                             value={i}
-//                             label={element.address}
-//                             coordinates={element.coords}
-//                             checked={checkedIndex === i}
-//                             onChange={(e) => {
-//                                 setCheckedIndex(e.target.value)
-//                             }}
-//                         />
-//                     )])
-//                     setIsAddressSet(true)
-//                 }
-//             })
-//         }
-//     }
-
-
-
-//     return(
-//         <div>
-//             <Form onSubmit={(e) => {
-//                 e.preventDefault()
-//                 //AfterLocationSetOrSubmit()
-//                 setInLocation(false)
-//             }}>
-//                 <Form.Group className='mb-3'>
-//                     <Form.Label>Add a new address</Form.Label>
-//                     <LocationSearchInput ref={newAddress} />
-//                 </Form.Group>
-//                 <Form.Group className='mb-3'>
-//                     <Form.Label>Select from previous addresses:</Form.Label>
-//                         {locationElements}
-//                 </Form.Group>
-//                 <Button type='submit'>Set</Button>
-
-//             </Form>
-//         </div>
-//     );
-// }
 
 
 
 function DashBoard(){
 
     const [customerEmail, setCustomerEmail] = useState('');
-    const [currentUserLocation, setCurrentUserLocation] = useState();
+    const [currentUserLocation, setCurrentUserLocation] = useState(React.createRef());
     const [inLocation, setInLocation] = useState(false);
     const [nearby, setNearby] = useState([]);
+    const [locationReady, setLocationReady] = useState(false);
     
-
 
     const navigate = useNavigate()
     useEffect(() => {
@@ -190,57 +121,38 @@ function DashBoard(){
         } else {
             navigate('/login')
         }
-
     }, [])
 
 
+    useEffect(() => {
+        async function getNearby(){
+            if (customerEmail && currentUserLocation){
+                await axios.get(`/api/customer/nearby`, {
+                    params: {
+                        longitude: currentUserLocation.current.state.currentCoordinates.lng,
+                        latitude: currentUserLocation.current.state.currentCoordinates.lat
+                    }
+                }).then((res) => {
+                    console.log(res)
+                    setNearby(res.data)
+                    console.log(res.data)
+                })
+            }
+        }
+
+        if (currentUserLocation){
+            setLocationReady(true)
+            if (currentUserLocation.current.state.currentCoordinates){
+                getNearby()
+            }
+        }
+
+
+    }, [locationReady, customerEmail])
+
+
     
-    // function GetUserLocation(){
-        
-    //     const [locationElements, setLocationElements] = useState([]);
-    //     const [checkedLocation, setCheckedLocation] = useState('');
-    //     const [newAddress, setNewAddress] = useState(React.createRef());
-    //     const [isAddressSet, setIsAddressSet] = useState(false);
-    //     const [currentCoordinates, setCurrentCoordinates] = useState({});
-
-
-    //     useEffect(() => {
-    //         getAllAddresses()
-    //     }, [customerEmail])
-
-
-    //     useEffect(() => {
-    //         if (isAddressSet){
-    //             const currentCoords = locationElements[0].props.coordinates
-    //             setCurrentCoordinates(currentCoords)
-    //         }
-    //     }, [isAddressSet])
-
-
-    //     async function getAllAddresses(){
-    //         if (customerEmail){
-    //             await axios.get(`/api/users/${customerEmail}`)
-    //                 .then((res) => {
-    //                 setLocationElements([])
-    //                 const data = res.data
-    //                 data.addresses.forEach(address => {
-    //                     setLocationElements(arr => [...arr, (
-    //                         <Form.Check type='radio'
-    //                             value={address.address}
-    //                             label={address.address}
-    //                             coordinates={address.coords}
-    //                             checked={checkedLocation === address.address}
-    //                             onChange={(e) => {
-    //                                 setCheckedLocation(e.target.value)
-    //                             }}
-    //                         />
-    //                     )])
-    //                 })
-    //                 setIsAddressSet(true)
-    //             })
-
-    //         }
-    //     }
+ 
 
     //     // async function AfterLocationSetOrSubmit(){
     //     //     if (!checkedLocation){
@@ -302,6 +214,7 @@ function DashBoard(){
     //                 })
     //             }
 
+
     //             DineInInfo()
                 
     //         }
@@ -337,10 +250,12 @@ function DashBoard(){
             <br />
             {/* <h5>{userDbLocations[0]}</h5> */}
             <Button onClick={() => setInLocation(true)}>Change Location</Button>
-            <AddressInput email={customerEmail}/>
+            
+            {customerEmail && <AddressInput email={customerEmail} ref={currentUserLocation} />}
+            
             
             <h1>
-                hi customer
+                customer
             </h1>
             {/* <DineInNotif /> */}
             <br />
@@ -349,13 +264,14 @@ function DashBoard(){
             }}>Reservations</Button>
             <h2>Let's Dine-in!</h2>
             <br />
-            <h4>Showing restaurants near you:</h4><br />
+            <h4>Showing restaurants near you:</h4><br /> 
             <div>
                 <CardGroup>
                     {nearby}
                 </CardGroup>
             </div>
             <br />
+
             <Button variant='danger' onClick={LogOut}>Logout</Button>
         </div>
     );
