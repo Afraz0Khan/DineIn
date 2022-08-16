@@ -103,7 +103,8 @@ function DashBoard(){
     const [currentUserLocation, setCurrentUserLocation] = useState(React.createRef());
     const [inLocation, setInLocation] = useState(false);
     const [nearby, setNearby] = useState([]);
-    const [locationReady, setLocationReady] = useState(false);
+    const [childReady, setChildReady] = useState(false);
+    const [childStateReady, setChildStateReady] = useState(false);
     
 
     const navigate = useNavigate()
@@ -126,29 +127,37 @@ function DashBoard(){
 
     useEffect(() => {
         async function getNearby(){
-            if (customerEmail && currentUserLocation){
-                await axios.get(`/api/customer/nearby`, {
-                    params: {
-                        longitude: currentUserLocation.current.state.currentCoordinates.lng,
-                        latitude: currentUserLocation.current.state.currentCoordinates.lat
-                    }
-                }).then((res) => {
-                    console.log(res)
-                    setNearby(res.data)
-                    console.log(res.data)
-                })
-            }
+            console.log('requesting')
+            await axios.get(`/api/customer/nearby`, {
+                params: {
+                    longitude: currentUserLocation.current.state.currentCoordinates.lng,
+                    latitude: currentUserLocation.current.state.currentCoordinates.lat
+                }
+            }).then((res) => {
+                console.log(res)
+                setNearby(res.data)
+                console.log(res.data)
+            })
         }
 
-        if (currentUserLocation){
-            setLocationReady(true)
-            if (currentUserLocation.current.state.currentCoordinates){
+        const coords = currentUserLocation.current
+        console.log(coords)
+        if (customerEmail && coords){
+            setChildReady(true)
+            console.log(coords.state)
+            if (childReady && coords.state !== undefined){
+                console.log('zzz')
+                setChildStateReady(true)
                 getNearby()
             }
+            else {
+                console.log('xx')
+                setChildReady(false)
+            }
         }
 
 
-    }, [locationReady, customerEmail])
+    }, [childStateReady, childReady, customerEmail])
 
 
     

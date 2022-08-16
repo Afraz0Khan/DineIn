@@ -10,7 +10,7 @@ router.get('/nearby', async (req, res) => {
 
     console.log(req.params)
 
-    if (req.query !== {}){
+    if (req.params !== {}){
         function KmstoRadian(kms){
             return kms/6371;
         }
