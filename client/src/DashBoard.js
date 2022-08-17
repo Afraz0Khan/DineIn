@@ -33,7 +33,7 @@ class AddressInput extends React.Component {
     }
 
     componentDidUpdate(){
-        if (this.state.toUpdate && this.state.locationElements.length!=0){
+        if (this.state.toUpdate && this.state.locationElements.length!==0){
             this.setState({
                 currentCoordinates: this.state.locationElements[this.state.checkedIndex].props.coordinates,
                 toUpdate: false,
@@ -103,7 +103,7 @@ function DashBoard(){
     const [currentUserLocation, setCurrentUserLocation] = useState(React.createRef());
     const [inLocation, setInLocation] = useState(false);
     const [nearby, setNearby] = useState([]);
-    const [childReady, setChildReady] = useState(false);
+    const [toLoop, setToLoop] = useState(false);
     const [childStateReady, setChildStateReady] = useState(false);
     
 
@@ -134,30 +134,46 @@ function DashBoard(){
                     latitude: currentUserLocation.current.state.currentCoordinates.lat
                 }
             }).then((res) => {
-                console.log(res)
-                setNearby(res.data)
-                console.log(res.data)
+                setNearby([])
+                const data = res.data
+                console.log(data)
+                data.forEach(element => {
+                    setNearby(prev => [...prev, (
+                        <SellerCard 
+                            heading={element.resName}
+                            address={element.resAddress}
+                            resId={element._id}
+                            customer_email={element.email}
+                        />
+                    )])
+                });
+
             })
-        }
+        }  
 
         const coords = currentUserLocation.current
-        console.log(coords)
-        if (customerEmail && coords){
-            setChildReady(true)
-            console.log(coords.state)
-            if (childReady && coords.state !== undefined){
-                console.log('zzz')
+        if (currentUserLocation.current){
+            console.log('here')
+            if (JSON.stringify(coords.state) !== '{}' && customerEmail){
+                console.log(coords.state)
+                console.log('in here')
                 setChildStateReady(true)
-                getNearby()
-            }
-            else {
-                console.log('xx')
-                setChildReady(false)
+                if (JSON.stringify(coords.state.currentCoordinates) !== '{}'){
+                    console.log('joe')
+                    console.log(currentUserLocation.current.state.currentCoordinates)
+                    getNearby()
+                } else {
+                    setToLoop(!toLoop)
+                }
+            } else {
+                setToLoop(!toLoop)
             }
         }
+        
 
 
-    }, [childStateReady, childReady, customerEmail])
+
+    }, [customerEmail, toLoop, childStateReady])
 
 
     
