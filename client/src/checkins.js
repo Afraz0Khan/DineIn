@@ -8,7 +8,7 @@ function CheckIns(){
 
     const [dineIns, setDineIns] = useState([]);
 
-    // for 2 useEffects
+    
     const [requestReady, setRequestReady] = useState(false);
     const [userEmail, setUserEmail] = useState('');
 

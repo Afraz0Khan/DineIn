@@ -79,13 +79,15 @@ router.post('/menu/:email/:action/:target', async (req, res) => {
 
 
 router.post('/reserve/:customerEmail', async (req, res) => {
+
+    console.log(req.body)
     const resId = req.body.resId
     const customer_email = req.params.customerEmail
     const reservation = {
         email: req.body.email,
         time: req.body.time
     }
-    console.log(resId, reservation)
+    
 
     const restaurant = await Seller.updateOne({_id: resId}, {$push: {"reservations": reservation}})
     if (req.body.type === 'dineIn'){
@@ -97,14 +99,22 @@ router.post('/reserve/:customerEmail', async (req, res) => {
         }})
         res.send(user).status(200)
     } else if (req.body.type === 'reservation'){
+        const seller = await Seller.findOne({_id: resId})
         const user = await User.updateOne({email: customer_email}, {$push: {
-            reservations: reservation
+            reservations: {
+                time: req.body.time,
+                restaurantId: resId,
+                resName: seller.resName,
+                resAddress: seller.resAddress
+            }
         }})
         res.send(user).status(200)
     }
     
     
 })
+
+router.post('/')
 
 router.post('/checkIn/:customer_email', async (req, res) => {
 

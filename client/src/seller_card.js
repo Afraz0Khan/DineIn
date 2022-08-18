@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 
 
 
+
 function SellerCard(props){
     // takes in:
     // 1. Restaurant name (or heading) and address
@@ -29,28 +30,31 @@ function SellerCard(props){
             return(
                 <div>
                     <DateTimePicker onChange={setReservation} value={reservation} />
-                    <Button onClick={OnDineIn}>Reserve</Button>
+                    <Button onClick={makeReservation()}>Reserve</Button>
                 </div>
             );
         }
     }
 
-
-    async function OnDineIn(){
-        const token = localStorage.getItem('token')
-        const user = jwtDecode(token)
-        const type = 'reservation'
-        if (!willReserve){
-            const type = 'dineIn'
-        }
-        const reservationPost = await axios.post(`/api/seller/reserve/${props.customer_email}`, {
+    async function makeReservation(){
+        await axios.post(`/api/seller/reserve/${props.customer_email}`, {
             resId: props.resId,
             time: reservation.toString(),
-            email: user.email,
-            type: type
+            type: 'reservation'
         }).then((res) => {
             console.log(res)
             setWillReserve(false)
+        })
+    }
+
+
+    async function OnDineIn(){
+        await axios.post(`/api/seller/reserve/${props.customer_email}`, {
+            resId: props.resId,
+            type: 'dineIn'
+        })
+        .then((res) => {
+            console.log(res)
         })
     }
 

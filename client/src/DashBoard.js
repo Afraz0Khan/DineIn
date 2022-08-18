@@ -142,7 +142,7 @@ function DashBoard(){
                             heading={element.resName}
                             address={element.resAddress}
                             resId={element._id}
-                            customer_email={element.email}
+                            customer_email={customerEmail}
                         />
                     )])
                 });
@@ -224,6 +224,7 @@ function DashBoard(){
                 await axios.get(`/api/users/${customerEmail}`)
                 .then((res) => {
                     const data = res.data
+                    console.log(data)
                     if (data.dineStatus.restaurantId){
                         setResId(data.dineStatus.restaurantId)
                         setDiningStatus(data.dineStatus.status)
@@ -254,6 +255,7 @@ function DashBoard(){
         if (resId){
             return(
                 <div>
+                    <h3>Dine Status</h3>
                     <Card>
                         <Card.Header as='h5'>{diningStatus}</Card.Header>
                         <Card.Body>
