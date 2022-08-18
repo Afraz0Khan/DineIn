@@ -127,7 +127,6 @@ function DashBoard(){
 
     useEffect(() => {
         async function getNearby(){
-            console.log('requesting')
             await axios.get(`/api/customer/nearby`, {
                 params: {
                     longitude: currentUserLocation.current.state.currentCoordinates.lng,
@@ -153,13 +152,9 @@ function DashBoard(){
 
         const coords = currentUserLocation.current
         if (currentUserLocation.current){
-            console.log('here')
             if (JSON.stringify(coords.state) !== '{}' && customerEmail){
-                console.log(coords.state)
-                console.log('in here')
                 setChildStateReady(true)
                 if (JSON.stringify(coords.state.currentCoordinates) !== '{}'){
-                    console.log('joe')
                     console.log(currentUserLocation.current.state.currentCoordinates)
                     getNearby()
                 } else {
@@ -169,9 +164,6 @@ function DashBoard(){
                 setToLoop(!toLoop)
             }
         }
-        
-
-
 
     }, [customerEmail, toLoop, childStateReady])
 
@@ -220,45 +212,62 @@ function DashBoard(){
     //     }
     // }
 
-    // function DineInNotif(){
+    function DineInNotif(){
 
-    //     const [resName, setResName] = useState('');
-    //     const [resAddress, setResAddress] = useState('');
+        const [resName, setResName] = useState('');
+        const [resAddress, setResAddress] = useState('');
+        const [diningStatus, setDiningStatus] = useState('');
+        const [resId, setResId] = useState('');
+        
+        useEffect(() => {
+            async function GetUserDineNotif(){
+                await axios.get(`/api/users/${customerEmail}`)
+                .then((res) => {
+                    const data = res.data
+                    if (data.dineStatus.restaurantId){
+                        setResId(data.dineStatus.restaurantId)
+                        setDiningStatus(data.dineStatus.status)
+                    }
+                })
+            }
 
+            if (customerEmail){
+                GetUserDineNotif()
+            }
+        }, [customerEmail])
 
-    //     useEffect(() => {
-    //         if (dineRes !== ''){
-    //             async function DineInInfo(){
-    //                 console.log(dineRes)
-    //                 const url = `/api/users/id/${dineRes}`
-    //                 const data = await axios.get(url)
-    //                 .then((res) => {
-    //                     const user = res.data
-    //                     setResAddress(user.resAddress)
-    //                     setResName(user.resName)
-    //                 })
-    //             }
-
-
-    //             DineInInfo()
-                
-    //         }
-    //     }, [dineRes])
+        useEffect(() => {
+            if (resId){
+                async function DineInInfo(){
+                    console.log(resId)
+                    await axios.get(`/api/users/id/${resId}`)
+                    .then((res) => {
+                        const user = res.data
+                        setResAddress(user.resAddress)
+                        setResName(user.resName)
+                    })
+                }
+                DineInInfo()
+            }
+        }, [resId])
   
-    //     return(
-    //         <div>
-    //             <Card>
-    //                 <Card.Header as='h5'>{dineStatus}</Card.Header>
-    //                 <Card.Body>
-    //                     <Card.Title>{resName}</Card.Title>
-    //                     <Card.Text>
-    //                         {resAddress}
-    //                     </Card.Text>
-    //                 </Card.Body>
-    //             </Card>
-    //         </div>
-    //     );
-    // }
+        if (resId){
+            return(
+                <div>
+                    <Card>
+                        <Card.Header as='h5'>{diningStatus}</Card.Header>
+                        <Card.Body>
+                            <Card.Title>{resName}</Card.Title>
+                            <Card.Text>
+                                {resAddress}
+                            </Card.Text>
+                        </Card.Body>
+                    </Card>
+                </div>
+            );
+        }
+        
+    }
 
     function LogOut(){
         localStorage.removeItem('token')
@@ -269,11 +278,6 @@ function DashBoard(){
     // Dine-is is the default route for dashboard
     return(
         <div>
-            <h4>
-                Your Location:
-            </h4>
-            <br />
-            {/* <h5>{userDbLocations[0]}</h5> */}
             <Button onClick={() => setInLocation(true)}>Change Location</Button>
             
             {customerEmail && <AddressInput email={customerEmail} ref={currentUserLocation} />}
@@ -282,7 +286,7 @@ function DashBoard(){
             <h1>
                 customer
             </h1>
-            {/* <DineInNotif /> */}
+            <DineInNotif />
             <br />
             <Button onClick={() => {
                 navigate('/dashboard/reserve')

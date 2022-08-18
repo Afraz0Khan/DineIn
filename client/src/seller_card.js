@@ -29,7 +29,7 @@ function SellerCard(props){
             return(
                 <div>
                     <DateTimePicker onChange={setReservation} value={reservation} />
-                    <Button onClick={OnDineIn}>Submit</Button>
+                    <Button onClick={OnDineIn}>Reserve</Button>
                 </div>
             );
         }
