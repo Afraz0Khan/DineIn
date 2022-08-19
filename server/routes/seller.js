@@ -97,6 +97,17 @@ router.post('/reserve/:customerEmail', async (req, res) => {
                 restaurantId: resId
             }
         }})
+
+        const seller_status = {
+            email: req.body.email,
+            time: req.body.time,
+            status: 'pending'
+        }
+        const seller = await Seller.updateOne({_id: resId}, {$push: {
+            "dineIns": {
+                seller_status
+            }
+        }})
         res.send(user).status(200)
     } else if (req.body.type === 'reservation'){
         const seller = await Seller.findOne({_id: resId})

@@ -48,25 +48,34 @@ class AddressInput extends React.Component {
                 .then((res) => {
                 this.setState({locationElements: []})
                 const data = res.data.addresses
-                const dummy = []
-                for (let i = 0; i < data.length; i++) {
-                    const element = data[i];
-                    dummy.push((
-                        <Form.Check type='radio'
-                            value={i}
-                            label={element.address}
-                            coordinates={element.coords}
-                            checked={this.state.checkedIndex === i}
-                            onChange={(e) => {
-                                this.setState({checkedIndex: e.target.value})
-                            }}
-                        />
-                    ))
+                if (data){
+                    const dummy = []
+                    for (let i = 0; i < data.length; i++) {
+                        const element = data[i];
+                        dummy.push((
+                            <Form.Check type='radio'
+                                value={i}
+                                label={element.address}
+                                coordinates={element.coords}
+                                checked={this.state.checkedIndex === i}
+                                onChange={(e) => {
+                                    this.setState({checkedIndex: e.target.value})
+                                }}
+                            />
+                        ))
+                    }
+                    this.setState({
+                        locationElements: dummy,
+                        toUpdate: true,
+                    })
+                } else {
+                    this.setState({
+                        toUpdate: false,
+                        currentCoordinates: false
+                    })
                 }
-                this.setState({
-                    locationElements: dummy,
-                    toUpdate: true,
-                })
+                
+                
             })
         }
     }
@@ -105,6 +114,7 @@ function DashBoard(){
     const [nearby, setNearby] = useState([]);
     const [toLoop, setToLoop] = useState(false);
     const [childStateReady, setChildStateReady] = useState(false);
+    const [addressExists, setAddressExists] = useState(true);
     
 
     const navigate = useNavigate()
@@ -152,9 +162,13 @@ function DashBoard(){
 
         const coords = currentUserLocation.current
         if (currentUserLocation.current){
-            if (JSON.stringify(coords.state) !== '{}' && customerEmail){
-                setChildStateReady(true)
-                if (JSON.stringify(coords.state.currentCoordinates) !== '{}'){
+            if (JSON.stringify(coords.state) !== '{}' && customerEmail &&  addressExists){
+                if (!childStateReady){
+                    setChildStateReady(true)
+                }
+                if (coords.state.currentCoordinates === false){
+                    setAddressExists(false)
+                } else if (JSON.stringify(coords.state.currentCoordinates) !== '{}'){
                     console.log(currentUserLocation.current.state.currentCoordinates)
                     getNearby()
                 } else {
@@ -165,7 +179,7 @@ function DashBoard(){
             }
         }
 
-    }, [customerEmail, toLoop, childStateReady])
+    }, [customerEmail, toLoop, childStateReady, addressExists])
 
 
     
