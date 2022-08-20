@@ -24,7 +24,8 @@ class AddressInput extends React.Component {
             inComponent: false,
             checkedIndex: 0,
             isAddressSet: false,
-            toUpdate: false
+            toUpdate: false,
+            addressExists: true
         }
     }
 
@@ -33,7 +34,7 @@ class AddressInput extends React.Component {
     }
 
     componentDidUpdate(){
-        if (this.state.toUpdate && this.state.locationElements.length!==0){
+        if (this.state.toUpdate && this.state.locationElements.length!==0 && this.state.addressExists){
             this.setState({
                 currentCoordinates: this.state.locationElements[this.state.checkedIndex].props.coordinates,
                 toUpdate: false,
@@ -48,7 +49,7 @@ class AddressInput extends React.Component {
                 .then((res) => {
                 this.setState({locationElements: []})
                 const data = res.data.addresses
-                if (data){
+                if (JSON.stringify(data) !== '[]'){
                     const dummy = []
                     for (let i = 0; i < data.length; i++) {
                         const element = data[i];
@@ -71,7 +72,7 @@ class AddressInput extends React.Component {
                 } else {
                     this.setState({
                         toUpdate: false,
-                        currentCoordinates: false
+                        addressExists: false
                     })
                 }
                 
@@ -161,12 +162,15 @@ function DashBoard(){
         }  
 
         const coords = currentUserLocation.current
-        if (currentUserLocation.current){
-            if (JSON.stringify(coords.state) !== '{}' && customerEmail &&  addressExists){
+        if (currentUserLocation.current && addressExists){
+            console.log('past first if statement')
+            if (JSON.stringify(coords.state) !== '{}' && customerEmail){
                 if (!childStateReady){
                     setChildStateReady(true)
                 }
-                if (coords.state.currentCoordinates === false){
+                console.log(currentUserLocation.current.state.addressExists)
+                if (currentUserLocation.current.state.addressExists === false){
+                    console.log('set address false')
                     setAddressExists(false)
                 } else if (JSON.stringify(coords.state.currentCoordinates) !== '{}'){
                     console.log(currentUserLocation.current.state.currentCoordinates)
