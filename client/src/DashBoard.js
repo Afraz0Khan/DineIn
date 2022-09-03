@@ -76,10 +76,23 @@ class AddressInput extends React.Component {
                     })
                 }
                 
-                
             })
         }
     }
+
+    async CreateNewAddress(){
+        await axios.post(`/api/users/register/address/${this.props.email}`, {
+            address: {
+                address: this.newAddress.current.state.address,
+                coords: {
+                    lat: this.newAddress.current.state.coords.lat,
+                    lng: this.newAddress.current.state.coords.lng
+                }
+            }
+        }).then(() => {
+            console.log('joe')
+        })
+    }   
 
     render() { 
         return (
@@ -96,7 +109,9 @@ class AddressInput extends React.Component {
                         <Form.Label>Select from previous addresses:</Form.Label>
                             {this.state.locationElements}
                     </Form.Group>
-                    <Button type='submit'>Set</Button>
+                    <Button type='submit' onClick={() => {
+                        this.CreateNewAddress()
+                    }}>Set</Button>
                 </Form>
             </div>
         );
